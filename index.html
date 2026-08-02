@@ -58,6 +58,10 @@ input,textarea{width:100%;border:1px solid var(--line);border-radius:12px;paddin
 .nav button{border:0;background:#f2eff5;border-radius:12px;padding:10px 12px;font-weight:700}
 .nav button.active{background:var(--accent);color:white}
 .callout{background:#fff9e8;border:1px solid #ead7a3;border-radius:14px;padding:12px}
+.water-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:10px}
+.water-btn{border:1px solid var(--line);background:white;border-radius:14px;padding:14px 8px;font-size:28px;min-height:64px}
+.water-btn.filled{background:var(--accent-soft);border-color:var(--accent)}
+.water-summary{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-top:10px;flex-wrap:wrap}
 @media(min-width:700px){.grid{grid-template-columns:repeat(4,minmax(0,1fr))}.badge-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
 </style>
 </head>
@@ -76,6 +80,7 @@ input,textarea{width:100%;border:1px solid var(--line);border-radius:12px;paddin
     <button data-tab="grocery">Groceries</button>
     <button data-tab="progress">Progress</button>
     <button data-tab="badges">Badges</button>
+    <button data-tab="beauty">Beauty Vault</button>
   </div>
 
   <section id="today" class="section active">
@@ -93,6 +98,15 @@ input,textarea{width:100%;border:1px solid var(--line);border-radius:12px;paddin
       <button class="primary" id="saveTop3" style="margin-top:12px">Save Today's Top 3</button>
     </div>
     <div class="grid" id="todayMetrics"></div>
+    <div class="card">
+      <h2>Water tracker</h2>
+      <p class="small">Each bottle is 30 oz. Three bottles = 90 oz and counts as sufficient. Four bottles = 120 oz and earns a hydration bonus.</p>
+      <div class="water-grid" id="waterTracker"></div>
+      <div class="water-summary">
+        <strong id="waterStatus">0 oz</strong>
+        <span class="small" id="waterMessage">Start with bottle one.</span>
+      </div>
+    </div>
     <div class="card">
       <h2>Exact schedule</h2>
       <p class="small" id="sunriseNote"></p>
@@ -169,6 +183,7 @@ input,textarea{width:100%;border:1px solid var(--line);border-radius:12px;paddin
       <div class="metric"><span class="small">Dog walks</span><strong id="dogWalkCount">0</strong></div>
       <div class="metric"><span class="small">Workouts</span><strong id="workoutCount">0</strong></div>
       <div class="metric"><span class="small">Protein days</span><strong id="proteinCount">0</strong></div>
+      <div class="metric"><span class="small">90+ oz days</span><strong id="waterCount">0</strong></div>
     </div>
     <div class="card">
       <h2>Add a check-in</h2>
@@ -200,6 +215,51 @@ input,textarea{width:100%;border:1px solid var(--line);border-radius:12px;paddin
       <div class="badge-grid" id="badgeGrid"></div>
     </div>
   </section>
+
+  <section id="beauty" class="section">
+    <div class="card hero">
+      <span class="badge">💄 Beauty Vault</span>
+      <h2 style="margin-top:10px">Shop your collection. Protect your freedom.</h2>
+      <p class="small">A calm no-buy challenge for makeup and unnecessary beauty purchases.</p>
+    </div>
+    <div class="grid">
+      <div class="metric"><span class="small">Current streak</span><strong id="beautyStreak">0</strong><span class="small">days</span></div>
+      <div class="metric"><span class="small">No-buy days</span><strong id="beautyDays">0</strong></div>
+      <div class="metric"><span class="small">Freedom Fund</span><strong id="beautySaved">$0</strong></div>
+      <div class="metric"><span class="small">Wishlist items</span><strong id="wishlistCount">0</strong></div>
+    </div>
+    <div class="card">
+      <h2>Today’s no-buy check-in</h2>
+      <label class="check-row">
+        <input type="checkbox" id="beautyNoBuyToday">
+        <span><strong>I did not buy makeup or unnecessary beauty products today.</strong></span>
+      </label>
+      <p class="small">True replacements and essentials can be handled intentionally without breaking the spirit of the challenge.</p>
+    </div>
+    <div class="card">
+      <h2>Skipped purchase</h2>
+      <p class="small">Log something you considered buying but left behind.</p>
+      <label>Item<input id="skippedItem" type="text" placeholder="e.g. New eyeshadow palette"></label>
+      <label style="margin-top:10px;display:block">Amount<input id="skippedAmount" type="number" min="0" step="0.01" placeholder="69"></label>
+      <button class="primary" id="addSkipped" style="margin-top:12px">Add to Freedom Fund</button>
+      <div id="skippedList" style="margin-top:12px"></div>
+    </div>
+    <div class="card">
+      <h2>30-day wishlist vault</h2>
+      <p class="small">Pause the purchase. Add it here instead.</p>
+      <label>Item<input id="wishItem" type="text" placeholder="What are you tempted to buy?"></label>
+      <label style="margin-top:10px;display:block">Price<input id="wishPrice" type="number" min="0" step="0.01" placeholder="48"></label>
+      <label style="margin-top:10px;display:block">Why do I want it?<textarea id="wishReason" placeholder="New release, limited edition, saw it online..."></textarea></label>
+      <button class="primary" id="addWish" style="margin-top:12px">Lock in the Vault</button>
+      <div id="wishlistList" style="margin-top:12px"></div>
+    </div>
+    <div class="card">
+      <h2>Shop My Stash</h2>
+      <p class="small" id="stashPrompt">Tap for today’s beauty mission.</p>
+      <button class="primary" id="stashButton">Give me a mission</button>
+    </div>
+  </section>
+
 </main>
 
 <div class="nav">
@@ -207,6 +267,7 @@ input,textarea{width:100%;border:1px solid var(--line);border-radius:12px;paddin
   <button data-tab="workout">Train</button>
   <button data-tab="meals">Eat</button>
   <button data-tab="progress">Track</button>
+  <button data-tab="beauty">Vault</button>
 </div>
 
 <script>
@@ -217,6 +278,7 @@ state.habits = state.habits || {};
 state.challenge = state.challenge || {};
 state.checkins = state.checkins || [];
 state.grocery = state.grocery || {};
+state.beauty = state.beauty || {days:{}, skipped:[], wishlist:[]};
 
 const coachMessages = [
   "Start calmly. You do not have to earn exhaustion for the workout to count.",
@@ -246,7 +308,7 @@ const habits = [
   ["dog","Dog walk"],
   ["protein","Protein goal"],
   ["fiber","Fiber-rich choices"],
-  ["water","Water goal"],
+  ["water","Water goal (3+ bottles)"],
   ["produce","Fruit or vegetables at least 4 times"],
   ["bowl","Power Bowl dessert"]
 ];
@@ -345,8 +407,37 @@ function adaptiveSchedule(day){
   return {rows,sunrise,safeLight};
 }
 
+
+function waterKey(date){ return "water_"+date; }
+function getWater(date){ return Number(state[waterKey(date)] || 0); }
+function setWater(date,count){
+  state[waterKey(date)] = Math.max(0,Math.min(4,count));
+  state.habits[habitKey(date,"water")] = count >= 3;
+  save();
+  renderAll();
+}
+function renderWater(day){
+  const count = getWater(day.date);
+  document.getElementById("waterTracker").innerHTML = [1,2,3,4].map(i => `
+    <button type="button" class="water-btn ${i<=count?"filled":""}" data-water="${i}"
+      aria-label="${i<=count?"Mark bottle "+i+" incomplete":"Mark bottle "+i+" complete"}">🥤</button>
+  `).join("");
+  document.querySelectorAll("[data-water]").forEach(btn => btn.addEventListener("click", () => {
+    const i = Number(btn.dataset.water);
+    setWater(day.date, i === count ? i-1 : i);
+  }));
+  document.getElementById("waterStatus").textContent = `${count*30} oz · ${count}/4 bottles`;
+  const msg = count === 0 ? "Start with bottle one." :
+              count === 1 ? "30 oz down." :
+              count === 2 ? "60 oz down. One more reaches your sufficient goal." :
+              count === 3 ? "90 oz — sufficient goal reached ✓" :
+                            "120 oz — hydration bonus earned ⭐";
+  document.getElementById("waterMessage").textContent = msg;
+}
+
 function renderToday() {
   const day = currentDay();
+  renderWater(day);
   const completed = habits.filter(h => getHabit(day.date,h[0])).length;
   document.getElementById("dayBadge").textContent = `Day ${day.dayNumber} · ${day.display}`;
   document.getElementById("greeting").textContent = `Good morning, Noelle. Welcome to Day ${day.dayNumber} of The 4:20 Club.`;
@@ -500,6 +591,7 @@ function renderProgress() {
   document.getElementById("dogWalkCount").textContent=count("dog");
   document.getElementById("workoutCount").textContent=count("workout");
   document.getElementById("proteinCount").textContent=count("protein");
+  document.getElementById("waterCount").textContent=APP.days.filter(d=>getWater(d.date)>=3).length;
   renderChart("weightChart","weight");
   renderChart("waistChart","waist");
   renderChart("strengthChart","squat");
@@ -531,6 +623,8 @@ function renderBadges() {
     ["🐕","Dog’s Favorite Human",dog>=14],
     ["🥣","Power Bowl Scientist",APP.days.filter(d=>getHabit(d.date,"bowl")).length>=7],
     ["🥩","Protein Pro",protein>=14],
+    ["💧","Hydration Hero",APP.days.filter(d=>getWater(d.date)>=3).length>=7],
+    ["💄","Beauty Vault Week",Object.values(state.beauty.days||{}).filter(Boolean).length>=7],
     ["🔥","Swing Queen",swing>=500],
     ["👑","August Founder",sunrise>=20]
   ];
@@ -539,8 +633,109 @@ function renderBadges() {
   `).join("");
 }
 
+
+function beautyDateKey(){ return isoToday(); }
+function calculateBeautyStreak(){
+  let streak = 0;
+  let d = new Date(isoToday()+"T12:00:00");
+  while(true){
+    const key = d.toLocaleDateString("en-CA");
+    if(state.beauty.days[key]){
+      streak++;
+      d.setDate(d.getDate()-1);
+    } else break;
+  }
+  return streak;
+}
+function daysUntilReview(dateAdded){
+  const added = new Date(dateAdded+"T12:00:00");
+  const review = new Date(added);
+  review.setDate(review.getDate()+30);
+  const today = new Date(isoToday()+"T12:00:00");
+  return Math.ceil((review-today)/86400000);
+}
+function renderBeauty(){
+  const box = document.getElementById("beautyNoBuyToday");
+  if(!box) return;
+  const todayKey = beautyDateKey();
+  box.checked = !!state.beauty.days[todayKey];
+  const days = Object.values(state.beauty.days).filter(Boolean).length;
+  const saved = state.beauty.skipped.reduce((sum,x)=>sum+Number(x.amount||0),0);
+  document.getElementById("beautyStreak").textContent = calculateBeautyStreak();
+  document.getElementById("beautyDays").textContent = days;
+  document.getElementById("beautySaved").textContent = "$"+saved.toFixed(0);
+  document.getElementById("wishlistCount").textContent = state.beauty.wishlist.length;
+  document.getElementById("skippedList").innerHTML =
+    state.beauty.skipped.slice().reverse().map(x=>`
+      <div class="grocery-row">
+        <strong>$${Number(x.amount).toFixed(2)}</strong>
+        <div>${x.item}<div class="small">${x.date}</div></div>
+      </div>
+    `).join("") || '<p class="small">No skipped purchases logged yet.</p>';
+  document.getElementById("wishlistList").innerHTML =
+    state.beauty.wishlist.map((x,i)=>{
+      const daysLeft = daysUntilReview(x.date);
+      const status = daysLeft > 0 ? `${daysLeft} days until review` : "Ready for review";
+      return `<div class="card" style="margin-top:10px">
+        <strong>${x.item}</strong> · $${Number(x.price||0).toFixed(2)}
+        <div class="small">${status}</div>
+        <div class="small">${x.reason||""}</div>
+        <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">
+          <button class="secondary wish-remove" data-index="${i}">I don’t want it</button>
+          <button class="secondary wish-keep" data-index="${i}">Keep waiting</button>
+        </div>
+      </div>`;
+    }).join("") || '<p class="small">Your vault is empty.</p>';
+  document.querySelectorAll(".wish-remove").forEach(btn=>btn.addEventListener("click",()=>{
+    state.beauty.wishlist.splice(Number(btn.dataset.index),1);
+    save(); renderBeauty();
+  }));
+  document.querySelectorAll(".wish-keep").forEach(btn=>btn.addEventListener("click",()=>{
+    state.beauty.wishlist[Number(btn.dataset.index)].date = isoToday();
+    save(); renderBeauty();
+  }));
+}
+document.getElementById("beautyNoBuyToday").addEventListener("change",e=>{
+  state.beauty.days[beautyDateKey()] = e.target.checked;
+  save(); renderBeauty(); renderBadges();
+});
+document.getElementById("addSkipped").addEventListener("click",()=>{
+  const item = document.getElementById("skippedItem").value.trim();
+  const amount = Number(document.getElementById("skippedAmount").value||0);
+  if(!item || amount<=0) return;
+  state.beauty.skipped.push({item,amount,date:isoToday()});
+  document.getElementById("skippedItem").value="";
+  document.getElementById("skippedAmount").value="";
+  save(); renderBeauty();
+});
+document.getElementById("addWish").addEventListener("click",()=>{
+  const item = document.getElementById("wishItem").value.trim();
+  const price = Number(document.getElementById("wishPrice").value||0);
+  const reason = document.getElementById("wishReason").value.trim();
+  if(!item) return;
+  state.beauty.wishlist.push({item,price,reason,date:isoToday()});
+  document.getElementById("wishItem").value="";
+  document.getElementById("wishPrice").value="";
+  document.getElementById("wishReason").value="";
+  save(); renderBeauty();
+});
+const stashMissions = [
+  "Wear a lipstick you have not used in six months.",
+  "Create a full look using one forgotten palette.",
+  "Use the oldest product in one makeup drawer.",
+  "Clean five makeup brushes.",
+  "Choose one product to finish before buying another.",
+  "Rediscover a blush you used to love.",
+  "Organize one small beauty drawer for five minutes.",
+  "Photograph a look created entirely from your stash."
+];
+document.getElementById("stashButton").addEventListener("click",()=>{
+  const pick = stashMissions[Math.floor(Math.random()*stashMissions.length)];
+  document.getElementById("stashPrompt").textContent = pick;
+});
+
 function renderAll() {
-  renderToday(); renderWorkout(); renderMeals(); renderChallenge(); renderGrocery(); renderProgress(); renderBadges(); timerText();
+  renderToday(); renderWorkout(); renderMeals(); renderChallenge(); renderGrocery(); renderProgress(); renderBadges(); renderBeauty(); timerText();
 }
 renderAll();
 if ("serviceWorker" in navigator) {

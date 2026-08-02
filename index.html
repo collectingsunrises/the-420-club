@@ -4,6 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#2d2140">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="4:20 Club">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png">
 <title>The 4:20 Club</title>
 <style>
 :root {
@@ -30,7 +35,9 @@ h2{font-size:18px;margin:0 0 10px} h3{font-size:15px;margin:14px 0 8px}
 .schedule-row,.meal-row,.exercise-row,.grocery-row{display:grid;grid-template-columns:110px 1fr;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
 .schedule-row:last-child,.meal-row:last-child,.exercise-row:last-child,.grocery-row:last-child{border-bottom:0}
 .check-row{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
-.check-row input{width:22px;height:22px;accent-color:var(--accent);margin-top:1px}
+.check-row input[type="checkbox"]{width:22px;height:22px;min-width:22px;accent-color:var(--accent);margin-top:1px}
+.top3-row{display:grid;grid-template-columns:28px 1fr;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line)}
+.top3-row:last-child{border-bottom:0}.top3-row input[type="text"]{font-size:16px;min-height:44px}
 button.primary{border:0;background:var(--accent);color:white;border-radius:12px;padding:11px 14px;font-weight:700}
 button.secondary{border:1px solid var(--line);background:white;border-radius:12px;padding:10px 12px;font-weight:700}
 input,textarea{width:100%;border:1px solid var(--line);border-radius:12px;padding:10px;font:inherit;background:white}
@@ -88,6 +95,7 @@ input,textarea{width:100%;border:1px solid var(--line);border-radius:12px;paddin
     <div class="grid" id="todayMetrics"></div>
     <div class="card">
       <h2>Exact schedule</h2>
+      <p class="small" id="sunriseNote"></p>
       <div id="scheduleList"></div>
     </div>
     <div class="card">
@@ -106,7 +114,7 @@ input,textarea{width:100%;border:1px solid var(--line);border-radius:12px;paddin
     </div>
     <div class="card">
       <h2>Workout timer</h2>
-      <div class="timer" id="timerDisplay">35:00</div>
+      <div class="timer" id="timerDisplay">45:00</div>
       <div class="timer-controls">
         <button class="primary" id="timerStart">Start</button>
         <button class="secondary" id="timerPause">Pause</button>
@@ -114,6 +122,7 @@ input,textarea{width:100%;border:1px solid var(--line);border-radius:12px;paddin
         <button class="secondary" data-minutes="10">10 min</button>
         <button class="secondary" data-minutes="20">20 min</button>
         <button class="secondary" data-minutes="35">35 min</button>
+        <button class="secondary" data-minutes="45">45 min</button>
       </div>
     </div>
   </section>
@@ -272,6 +281,70 @@ function getMustDos(day) {
   ];
 }
 
+
+function pad2(n){ return String(n).padStart(2,"0"); }
+function minutesToText(total){
+  total = ((Math.round(total) % 1440) + 1440) % 1440;
+  const h24 = Math.floor(total/60), m = total%60;
+  const suffix = h24 >= 12 ? "PM" : "AM";
+  const h = h24 % 12 || 12;
+  return `${h}:${pad2(m)} ${suffix}`;
+}
+function sunriseMinutes(dateString){
+  // NOAA-style approximation for Huntington Beach, CA.
+  const lat = 33.6595, lon = -117.9988;
+  const date = new Date(dateString + "T12:00:00");
+  const start = new Date(date.getFullYear(),0,0);
+  const N = Math.floor((date-start)/86400000);
+  const lngHour = lon / 15;
+  const t = N + ((6 - lngHour) / 24);
+  const M = (0.9856 * t) - 3.289;
+  const deg = Math.PI/180;
+  let L = M + 1.916*Math.sin(M*deg) + 0.020*Math.sin(2*M*deg) + 282.634;
+  L = (L+360)%360;
+  let RA = Math.atan(0.91764*Math.tan(L*deg))/deg;
+  RA = (RA+360)%360;
+  const Lquadrant = Math.floor(L/90)*90;
+  const RAquadrant = Math.floor(RA/90)*90;
+  RA = (RA + Lquadrant - RAquadrant)/15;
+  const sinDec = 0.39782*Math.sin(L*deg);
+  const cosDec = Math.cos(Math.asin(sinDec));
+  const cosH = (Math.cos(90.833*deg) - sinDec*Math.sin(lat*deg)) / (cosDec*Math.cos(lat*deg));
+  let H = (360 - Math.acos(Math.max(-1,Math.min(1,cosH)))/deg)/15;
+  const T = H + RA - 0.06571*t - 6.622;
+  let UT = (T - lngHour + 24)%24;
+  // PDT until first Sunday in November for this 2026 program.
+  const local = UT - 7;
+  return ((local+24)%24)*60;
+}
+function adaptiveSchedule(day){
+  const workStart = day.date && new Date(day.date+"T12:00:00").getDay() >= 2 &&
+                    new Date(day.date+"T12:00:00").getDay() <= 5 ? 450 : 480;
+  const sunrise = sunriseMinutes(day.date);
+  const safeLight = sunrise - 26;
+  const wake = 260;              // 4:20
+  const workoutStart = 270;      // 4:30
+  const workoutEnd = 315;        // 5:15
+  const walkStart = Math.max(workoutEnd, safeLight);
+  const walkEnd = walkStart + 45;
+  const readyEnd = workStart - 5; // five-minute buffer
+  const readyStart = readyEnd - 40;
+  const totalChores = 45;
+  const choresBefore = Math.max(0, Math.min(totalChores, walkStart-workoutEnd));
+  const choresAfter = Math.max(0, totalChores-choresBefore);
+  const rows = [
+    [minutesToText(wake), "Wake, water, coffee, creatine"],
+    [`${minutesToText(workoutStart)}–${minutesToText(workoutEnd)}`, `${day.workout} — workout first`]
+  ];
+  if(choresBefore>0) rows.push([`${minutesToText(workoutEnd)}–${minutesToText(workoutEnd+choresBefore)}`, `Morning chores — part 1 (${choresBefore} min)`]);
+  rows.push([`${minutesToText(walkStart)}–${minutesToText(walkEnd)}`, "Dog walk at first safe light"]);
+  if(choresAfter>0) rows.push([`${minutesToText(walkEnd)}–${minutesToText(walkEnd+choresAfter)}`, `Morning chores — part 2 (${choresAfter} min)`]);
+  rows.push([`${minutesToText(readyStart)}–${minutesToText(readyEnd)}`, "Shower and get ready — last"]);
+  rows.push([`${minutesToText(readyEnd)}–${minutesToText(workStart)}`, "Buffer, review Top 3, log in"]);
+  rows.push([minutesToText(workStart), "Work begins"]);
+  return {rows,sunrise,safeLight};
+}
+
 function renderToday() {
   const day = currentDay();
   const completed = habits.filter(h => getHabit(day.date,h[0])).length;
@@ -280,34 +353,49 @@ function renderToday() {
   document.getElementById("coachMessage").textContent = coachMessages[(day.dayNumber-1) % coachMessages.length];
   document.getElementById("dailyProgress").style.width = `${completed / habits.length * 100}%`;
   document.getElementById("dailyProgressText").textContent = `${completed} of ${habits.length} sunrise habits completed`;
+  const topKey = "top3_" + day.date;
+  const rawTop = state[topKey] || [
+    {text:"",done:false},{text:"",done:false},{text:"",done:false}
+  ];
+  const topItems = rawTop.map(x => typeof x === "string" ? {text:x,done:false} : x);
+  while (topItems.length < 3) topItems.push({text:"",done:false});
 
-  
-  const topKey = "top3_"+day.date;
-  const existing = state[topKey] || ["","",""];
-  document.getElementById("mustDoList").innerHTML = existing.map((item,i)=>`
-    <label class="check-row">
-      <input type="checkbox" ${item.done?"checked":""} data-topcheck="${i}">
-      <input type="text" placeholder="Must-do #${i+1} (e.g. Call dentist)" value="${typeof item==="string"?item:(item.text||"")}" data-toptext="${i}">
-    </label>
+  document.getElementById("mustDoList").innerHTML = topItems.slice(0,3).map((item,i)=>`
+    <div class="top3-row">
+      <input aria-label="Complete must-do ${i+1}" type="checkbox" ${item.done ? "checked" : ""} data-topcheck="${i}">
+      <input aria-label="Must-do ${i+1}" type="text" inputmode="text"
+        autocomplete="off" placeholder="Must-do #${i+1} — e.g. Call dentist"
+        value="${String(item.text || "").replace(/"/g,"&quot;")}" data-toptext="${i}">
+    </div>
   `).join("");
 
-  document.getElementById("saveTop3").onclick=()=>{
-      const arr=[];
-      document.querySelectorAll("[data-toptext]").forEach((el,idx)=>{
-         const chk=document.querySelector('[data-topcheck="'+idx+'"]');
-         arr.push({text:el.value,done:chk.checked});
-      });
-      state[topKey]=arr;
-      save();
-      alert("Today's Top 3 saved!");
+  const saveTop3Now = () => {
+    state[topKey] = [0,1,2].map(i => ({
+      text: document.querySelector(`[data-toptext="${i}"]`).value.trim(),
+      done: document.querySelector(`[data-topcheck="${i}"]`).checked
+    }));
+    save();
+    const btn = document.getElementById("saveTop3");
+    btn.textContent = "Saved ✓";
+    setTimeout(() => btn.textContent = "Save Today's Top 3", 1200);
   };
-document.getElementById("todayMetrics").innerHTML = `
+  document.getElementById("saveTop3").onclick = saveTop3Now;
+  document.querySelectorAll("[data-toptext]").forEach(el => {
+    el.addEventListener("blur", saveTop3Now);
+    el.addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); saveTop3Now(); el.blur(); }});
+  });
+  document.querySelectorAll("[data-topcheck]").forEach(el => el.addEventListener("change", saveTop3Now));
+
+  document.getElementById("todayMetrics").innerHTML = `
     <div class="metric"><span class="small">Workout</span><strong style="font-size:17px">${day.workout}</strong></div>
     <div class="metric"><span class="small">Challenge</span><strong style="font-size:17px">${day.challenge}</strong></div>
     <div class="metric"><span class="small">Meals</span><strong style="font-size:17px">3 + 2 + bowl</strong></div>
     <div class="metric"><span class="small">Sunrise score</span><strong>${completed}/8</strong></div>`;
 
-  document.getElementById("scheduleList").innerHTML = day.schedule.map(r =>
+  const flow = adaptiveSchedule(day);
+  document.getElementById("sunriseNote").textContent =
+    `Sunrise: ${minutesToText(flow.sunrise)} · First safe light target: ${minutesToText(flow.safeLight)} · Walk time recalibrates automatically.`;
+  document.getElementById("scheduleList").innerHTML = flow.rows.map(r =>
     `<div class="schedule-row"><strong>${r[0]}</strong><div>${r[1]}</div></div>`
   ).join("");
 
@@ -335,7 +423,7 @@ document.getElementById("completeWorkout").addEventListener("click", () => {
   const day=currentDay(); setHabit(day.date,"workout",!getHabit(day.date,"workout"));
 });
 
-let remaining=35*60, timerId=null;
+let remaining=45*60, timerId=null;
 function timerText() {
   const m=Math.floor(remaining/60), s=remaining%60;
   document.getElementById("timerDisplay").textContent=`${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;
@@ -345,7 +433,7 @@ document.getElementById("timerStart").addEventListener("click", () => {
   timerId=setInterval(()=>{ if(remaining>0){remaining--;timerText();} else {clearInterval(timerId);timerId=null;} },1000);
 });
 document.getElementById("timerPause").addEventListener("click",()=>{clearInterval(timerId);timerId=null;});
-document.getElementById("timerReset").addEventListener("click",()=>{clearInterval(timerId);timerId=null;remaining=35*60;timerText();});
+document.getElementById("timerReset").addEventListener("click",()=>{clearInterval(timerId);timerId=null;remaining=45*60;timerText();});
 document.querySelectorAll("[data-minutes]").forEach(b=>b.addEventListener("click",()=>{clearInterval(timerId);timerId=null;remaining=Number(b.dataset.minutes)*60;timerText();}));
 
 function renderMeals() {
@@ -455,6 +543,9 @@ function renderAll() {
   renderToday(); renderWorkout(); renderMeals(); renderChallenge(); renderGrocery(); renderProgress(); renderBadges(); timerText();
 }
 renderAll();
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => navigator.serviceWorker.register("./service-worker.js").catch(()=>{}));
+}
 </script>
 </body>
 </html>

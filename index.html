@@ -128,7 +128,7 @@ input,textarea{width:100%;border:1px solid var(--line);border-radius:12px;paddin
     </div>
     <div class="card">
       <h2>Workout timer</h2>
-      <div class="timer" id="timerDisplay">45:00</div>
+      <div class="timer" id="timerDisplay">40:00</div>
       <div class="timer-controls">
         <button class="primary" id="timerStart">Start</button>
         <button class="secondary" id="timerPause">Pause</button>
@@ -136,6 +136,7 @@ input,textarea{width:100%;border:1px solid var(--line);border-radius:12px;paddin
         <button class="secondary" data-minutes="10">10 min</button>
         <button class="secondary" data-minutes="20">20 min</button>
         <button class="secondary" data-minutes="35">35 min</button>
+        <button class="secondary" data-minutes="40">40 min</button>
         <button class="secondary" data-minutes="45">45 min</button>
       </div>
     </div>
@@ -380,30 +381,102 @@ function sunriseMinutes(dateString){
   return ((local+24)%24)*60;
 }
 function adaptiveSchedule(day){
-  const workStart = day.date && new Date(day.date+"T12:00:00").getDay() >= 2 &&
-                    new Date(day.date+"T12:00:00").getDay() <= 5 ? 450 : 480;
+  const dateObj = new Date(day.date+"T12:00:00");
+  const dow = dateObj.getDay(); // 0 Sun, 1 Mon, 2 Tue...
   const sunrise = sunriseMinutes(day.date);
   const safeLight = sunrise - 26;
-  const wake = 260;              // 4:20
-  const workoutStart = 270;      // 4:30
-  const workoutEnd = 315;        // 5:15
-  const walkStart = Math.max(workoutEnd, safeLight);
-  const walkEnd = walkStart + 45;
-  const readyEnd = workStart - 5; // five-minute buffer
-  const readyStart = readyEnd - 40;
-  const totalChores = 45;
-  const choresBefore = Math.max(0, Math.min(totalChores, walkStart-workoutEnd));
-  const choresAfter = Math.max(0, totalChores-choresBefore);
+
+  let wake, workoutStart, workoutMinutes, walkMinutes, choresMinutes, readyMinutes, workStart, bufferMinutes;
+
+  if(dow === 1){
+    // Monday: later start, never before 9:00 AM.
+    wake = 300;              // 5:00
+    workoutStart = 310;      // 5:10
+    workoutMinutes = 45;
+    walkMinutes = 45;
+    choresMinutes = 40;
+    readyMinutes = 40;
+    workStart = 540;         // 9:00
+    bufferMinutes = 30;
+  } else if(dow >= 2 && dow <= 5){
+    // Tuesday-Friday: protect a calm, on-time 7:30 AM start.
+    wake = 260;              // 4:20
+    workoutStart = 270;      // 4:30
+    workoutMinutes = 40;
+    walkMinutes = 40;
+    choresMinutes = 30;
+    readyMinutes = 40;
+    workStart = 450;         // 7:30
+    bufferMinutes = 30;
+  } else {
+    // Saturday-Sunday: 8:00 AM work start.
+    wake = 290;              // 4:50
+    workoutStart = 300;      // 5:00
+    workoutMinutes = 40;
+    walkMinutes = 40;
+    choresMinutes = 30;
+    readyMinutes = 40;
+    workStart = 480;         // 8:00
+    bufferMinutes = 30;
+  }
+
+  const workoutEnd = workoutStart + workoutMinutes;
+  const readyEnd = workStart - bufferMinutes;
+  const readyStart = readyEnd - readyMinutes;
+
+  // Walk at first safe light, but never before the workout ends.
+  let walkStart = Math.max(workoutEnd, safeLight);
+  let walkEnd = walkStart + walkMinutes;
+
+  // Chores go before or after the walk, whichever fits best.
+  let availableBeforeWalk = Math.max(0, walkStart - workoutEnd);
+  let choresBefore = Math.min(choresMinutes, availableBeforeWalk);
+  let choresAfter = choresMinutes - choresBefore;
+
+  // If chores + walk would collide with getting ready, shorten chores first,
+  // then move the walk no later than needed while never going earlier than safe light.
+  let latestPreReadyEnd = readyStart;
+  let projectedEnd = walkEnd + choresAfter;
+  if(projectedEnd > latestPreReadyEnd){
+    let overflow = projectedEnd - latestPreReadyEnd;
+    choresAfter = Math.max(0, choresAfter - overflow);
+    projectedEnd = walkEnd + choresAfter;
+  }
+
   const rows = [
     [minutesToText(wake), "Wake, water, coffee, creatine"],
-    [`${minutesToText(workoutStart)}–${minutesToText(workoutEnd)}`, `${day.workout} — workout first`]
+    [`${minutesToText(workoutStart)}–${minutesToText(workoutEnd)}`, `${day.workout} — workout first (${workoutMinutes} min)`]
   ];
-  if(choresBefore>0) rows.push([`${minutesToText(workoutEnd)}–${minutesToText(workoutEnd+choresBefore)}`, `Morning chores — part 1 (${choresBefore} min)`]);
-  rows.push([`${minutesToText(walkStart)}–${minutesToText(walkEnd)}`, "Dog walk at first safe light"]);
-  if(choresAfter>0) rows.push([`${minutesToText(walkEnd)}–${minutesToText(walkEnd+choresAfter)}`, `Morning chores — part 2 (${choresAfter} min)`]);
-  rows.push([`${minutesToText(readyStart)}–${minutesToText(readyEnd)}`, "Shower and get ready — last"]);
-  rows.push([`${minutesToText(readyEnd)}–${minutesToText(workStart)}`, "Buffer, review Top 3, log in"]);
-  rows.push([minutesToText(workStart), "Work begins"]);
+
+  if(choresBefore > 0){
+    rows.push([
+      `${minutesToText(workoutEnd)}–${minutesToText(workoutEnd+choresBefore)}`,
+      `Morning reset — part 1 (${choresBefore} min)`
+    ]);
+  }
+
+  rows.push([
+    `${minutesToText(walkStart)}–${minutesToText(walkEnd)}`,
+    `Dog walk at first safe light (${walkMinutes} min)`
+  ]);
+
+  if(choresAfter > 0){
+    rows.push([
+      `${minutesToText(walkEnd)}–${minutesToText(walkEnd+choresAfter)}`,
+      `Morning reset — part 2 (${choresAfter} min)`
+    ]);
+  }
+
+  rows.push([
+    `${minutesToText(readyStart)}–${minutesToText(readyEnd)}`,
+    `Shower and get ready — last (${readyMinutes} min)`
+  ]);
+  rows.push([
+    `${minutesToText(readyEnd)}–${minutesToText(workStart)}`,
+    `Breakfast, review Top 3, and settle in (${bufferMinutes}-min buffer)`
+  ]);
+  rows.push([minutesToText(workStart), "At workstation and ready"]);
+
   return {rows,sunrise,safeLight};
 }
 
@@ -485,7 +558,7 @@ function renderToday() {
 
   const flow = adaptiveSchedule(day);
   document.getElementById("sunriseNote").textContent =
-    `Sunrise: ${minutesToText(flow.sunrise)} · First safe light target: ${minutesToText(flow.safeLight)} · Walk time recalibrates automatically.`;
+    `Sunrise: ${minutesToText(flow.sunrise)} · Earliest coyote-conscious walk: ${minutesToText(flow.safeLight)} · Schedule recalibrates automatically.`;
   document.getElementById("scheduleList").innerHTML = flow.rows.map(r =>
     `<div class="schedule-row"><strong>${r[0]}</strong><div>${r[1]}</div></div>`
   ).join("");
@@ -514,7 +587,7 @@ document.getElementById("completeWorkout").addEventListener("click", () => {
   const day=currentDay(); setHabit(day.date,"workout",!getHabit(day.date,"workout"));
 });
 
-let remaining=45*60, timerId=null;
+let remaining=40*60, timerId=null;
 function timerText() {
   const m=Math.floor(remaining/60), s=remaining%60;
   document.getElementById("timerDisplay").textContent=`${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;
@@ -524,7 +597,7 @@ document.getElementById("timerStart").addEventListener("click", () => {
   timerId=setInterval(()=>{ if(remaining>0){remaining--;timerText();} else {clearInterval(timerId);timerId=null;} },1000);
 });
 document.getElementById("timerPause").addEventListener("click",()=>{clearInterval(timerId);timerId=null;});
-document.getElementById("timerReset").addEventListener("click",()=>{clearInterval(timerId);timerId=null;remaining=45*60;timerText();});
+document.getElementById("timerReset").addEventListener("click",()=>{clearInterval(timerId);timerId=null;remaining=40*60;timerText();});
 document.querySelectorAll("[data-minutes]").forEach(b=>b.addEventListener("click",()=>{clearInterval(timerId);timerId=null;remaining=Number(b.dataset.minutes)*60;timerText();}));
 
 function renderMeals() {

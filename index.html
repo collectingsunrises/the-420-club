@@ -275,7 +275,9 @@ refreshMissions.onclick=()=>{
   S.missionRefresh=Number(S.missionRefresh||0)+1;
   save();
   renderWeek();
-};save()};addChallenge.onclick=()=>{const c=APP.challenges.find(c=>day().date>=c.start&&day().date<=c.end)||APP.challenges[0];S.challenge[c.name]=Number(S.challenge[c.name]||0)+Number(challengeAdd.value||0);challengeAdd.value="";save();renderWeek()};saveReview.onclick=()=>{S.review={worked:rWorked.value,hard:rHard.value,annoy:rAnnoy.value,change:rChange.value,date:today()};save()};
+};
+addChallenge.onclick=()=>{const c=APP.challenges.find(c=>day().date>=c.start&&day().date<=c.end)||APP.challenges[0];S.challenge[c.name]=Number(S.challenge[c.name]||0)+Number(challengeAdd.value||0);challengeAdd.value="";save();renderWeek()};
+saveReview.onclick=()=>{S.review={worked:rWorked.value,hard:rHard.value,annoy:rAnnoy.value,change:rChange.value,date:today()};save()};
 document.querySelectorAll("[data-view]").forEach(b=>b.onclick=()=>{document.querySelectorAll(".view").forEach(v=>v.classList.toggle("active",v.id===b.dataset.view));document.querySelectorAll("[data-view]").forEach(x=>x.classList.toggle("active",x===b));window.scrollTo(0,0)});
 document.querySelectorAll("[data-panel]").forEach(b=>b.onclick=()=>{document.querySelectorAll("#body .panel").forEach(p=>p.classList.toggle("active",p.id===b.dataset.panel));document.querySelectorAll("[data-panel]").forEach(x=>x.classList.toggle("active",x===b))});
 document.querySelectorAll("[data-fuel]").forEach(b=>b.onclick=()=>{document.querySelectorAll("#fuel .panel").forEach(p=>p.classList.toggle("active",p.id===b.dataset.fuel));document.querySelectorAll("[data-fuel]").forEach(x=>x.classList.toggle("active",x===b))});

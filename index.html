@@ -65,7 +65,7 @@ button{font:inherit} .primary{border:0;border-radius:13px;padding:12px 15px;back
 <section id="body" class="view">
   <div class="tabs"><button class="active" data-panel="train">Train</button><button data-panel="progress">Progress</button></div>
   <div id="train" class="panel active">
-    <div class="hero-card"><div class="eyebrow">Today’s workout</div><h2 id="workoutTitle"></h2><div id="exerciseList"></div></div>
+    <div class="hero-card"><div class="eyebrow">Today’s workout</div><h2 id="workoutTitle"></h2><div class="card" style="margin-top:12px"><div class="eyebrow">5-minute guided warm-up</div><div id="warmupList"></div></div><div id="exerciseList"></div></div>
     <div class="card"><div class="eyebrow">Timer</div><div class="timer" id="timer">40:00</div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="primary" id="startTimer">Start</button><button class="ghost" id="pauseTimer">Pause</button><button class="ghost" data-min="20">20</button><button class="ghost" data-min="40">40</button><button class="ghost" data-min="45">45</button></div></div>
   </div>
   <div id="progress" class="panel">
@@ -92,7 +92,18 @@ button{font:inherit} .primary{border:0;border-radius:13px;padding:12px 15px;back
 
 <section id="week" class="view">
   <div class="hero-card"><div class="eyebrow">Monday Missions</div><h2>Set the compass for the week.</h2></div>
-  <div class="card"><div class="mission-row"><label>💪 Body<input id="mBody"></label></div><div class="mission-row"><label>💰 Money<input id="mMoney"></label></div><div class="mission-row"><label>🏡 Home<input id="mHome"></label></div><div class="mission-row"><label>❤️ Life<input id="mLife"></label></div><div class="mission-row"><label>📚 Learn<input id="mLearn"></label></div><button class="primary" id="saveMissions">Save missions</button></div>
+  <div class="card">
+    <div class="mission-row"><div class="eyebrow">💪 Body</div><p id="mBody"></p></div>
+    <div class="mission-row"><div class="eyebrow">💰 Money</div><p id="mMoney"></p></div>
+    <div class="mission-row"><div class="eyebrow">🏡 Home</div><p id="mHome"></p></div>
+    <div class="mission-row"><div class="eyebrow">❤️ Life</div><p id="mLife"></p></div>
+    <div class="mission-row"><div class="eyebrow">📚 Learn</div><p id="mLearn"></p></div>
+    <div class="card" style="margin-top:12px;background:var(--soft)">
+      <div class="eyebrow">⭐ Coach’s Pick</div>
+      <p id="coachPick"></p>
+    </div>
+    <button class="primary" id="refreshMissions">Give me new missions</button>
+  </div>
   <div class="card"><div class="eyebrow">Weekly challenge</div><h2 id="challengeName"></h2><p id="challengeText"></p><div class="progress"><div id="challengeBar"></div></div><div style="display:flex;gap:8px;margin-top:10px"><input id="challengeAdd" type="number" placeholder="Add progress"><button class="primary" id="addChallenge">Add</button></div></div>
   <div class="card"><div class="eyebrow">Sunday Club Meeting</div><label>What worked?<textarea id="rWorked"></textarea></label><label>What was difficult?<textarea id="rHard"></textarea></label><label>What annoyed me?<textarea id="rAnnoy"></textarea></label><label>What should change?<textarea id="rChange"></textarea></label><button class="primary" id="saveReview">Save review</button></div>
 </section>
@@ -115,7 +126,127 @@ function sunrise(ds){const lat=33.6595,lon=-117.9988,date=new Date(ds+"T12:00:00
 function flow(d){const dow=new Date(d.date+"T12:00:00").getDay(),sr=sunrise(d.date),safe=sr-26;let wake,ws,wm,walk,chores,ready,work,buffer;if(dow===1){wake=300;ws=310;wm=45;walk=45;chores=40;ready=40;work=540;buffer=30}else if(dow>=2&&dow<=5){wake=260;ws=270;wm=40;walk=40;chores=30;ready=40;work=450;buffer=30}else{wake=290;ws=300;wm=40;walk=40;chores=30;ready=40;work=480;buffer=30}const we=ws+wm,re=work-buffer,rs=re-ready,wstart=Math.max(we,safe),wend=wstart+walk;let before=Math.min(chores,Math.max(0,wstart-we)),after=Math.max(0,chores-before);if(wend+after>rs)after=Math.max(0,rs-wend);const rows=[[time(wake),"Wake, water, coffee, creatine"],[`${time(ws)}–${time(we)}`,d.workout+" — workout first"]];if(before)rows.push([`${time(we)}–${time(we+before)}`,"Morning reset"]);rows.push([`${time(wstart)}–${time(wend)}`,"Dog walk at first safe light"]);if(after)rows.push([`${time(wend)}–${time(wend+after)}`,"Morning reset"]);rows.push([`${time(rs)}–${time(re)}`,"Get ready — last"]);rows.push([`${time(re)}–${time(work)}`,"Breakfast, Top 3, settle in"]);rows.push([time(work),"At workstation"]);return{rows,sr,safe};}
 function renderHome(){const d=day(),done=habits.filter(x=>getH(d.date,x[0])).length;dateLine.textContent=d.display+" · Day "+d.dayNumber;greeting.textContent="Good morning, Noelle.";coach.textContent=["You only have to start.","Protect the morning and the rest gets easier.","Today does not need to be perfect to count."][(d.dayNumber-1)%3];dayProgress.style.width=(done/habits.length*100)+"%";dayProgressText.textContent=done+" of "+habits.length+" completed";winList.innerHTML=habits.map(([k,l])=>`<label class="check"><input type="checkbox" data-h="${k}" ${getH(d.date,k)?"checked":""}><span>${l}</span></label>`).join("");document.querySelectorAll("[data-h]").forEach(x=>x.onchange=e=>{S.h[hk(d.date,e.target.dataset.h)]=e.target.checked;save();renderAll()});const top=S.top[d.date]||[{},{},{}];top3.innerHTML=[0,1,2].map(i=>`<div class="top3"><input type="checkbox" data-tc="${i}" ${top[i].done?"checked":""}><input data-tt="${i}" value="${top[i].text||""}" placeholder="Must-do #${i+1}"></div>`).join("");const n=S.notes[d.date]||{};amNote.value=n.am||"";pmWin.value=n.win||"";pmGratitude.value=n.grat||"";pmDump.value=n.dump||"";const f=flow(d);sunriseText.textContent=`Sunrise ${time(f.sr)} · earliest coyote-conscious walk ${time(f.safe)}`;flowList.innerHTML=f.rows.map(r=>`<div class="flow"><strong>${r[0]}</strong><div>${r[1]}</div></div>`).join("");const wc=Number(S.water[d.date]||0);water.innerHTML=[1,2,3,4].map(i=>`<button class="${i<=wc?"on":""}" data-water="${i}">🥤</button>`).join("");waterText.textContent=`${wc*30} oz · ${wc}/4 bottles`;document.querySelectorAll("[data-water]").forEach(b=>b.onclick=()=>{const i=Number(b.dataset.water);S.water[d.date]=i===wc?i-1:i;S.h[hk(d.date,"water")]=S.water[d.date]>=3;save();renderAll()});bowlTonight.textContent="🥣 "+d.meals["Power Bowl"];}
 saveTop3.onclick=()=>{const d=day().date;S.top[d]=[0,1,2].map(i=>({text:document.querySelector(`[data-tt="${i}"]`).value,done:document.querySelector(`[data-tc="${i}"]`).checked}));save()};saveAm.onclick=()=>{const d=day().date;S.notes[d]=S.notes[d]||{};S.notes[d].am=amNote.value;save()};savePm.onclick=()=>{const d=day().date;S.notes[d]=S.notes[d]||{};Object.assign(S.notes[d],{win:pmWin.value,grat:pmGratitude.value,dump:pmDump.value});save()};
-function renderBody(){const d=day(),list=APP.workouts[d.workout]||APP.workouts.Recovery;workoutTitle.textContent=d.workout;exerciseList.innerHTML=list.map(x=>`<div class="meal"><b>${x.name}</b><div>${x.sets}</div><div class="small">${x.demo}</div></div>`).join("");sunrises.textContent=APP.days.filter(x=>habits.filter(h=>getH(x.date,h[0])).length>=3).length;workouts.textContent=APP.days.filter(x=>getH(x.date,"workout")).length;walks.textContent=APP.days.filter(x=>getH(x.date,"dog")).length;waterDays.textContent=APP.days.filter(x=>Number(S.water[x.date]||0)>=3).length;}
+
+const warmups = {
+  "Strength A": [
+    "1 minute brisk march or easy jump rope",
+    "10 bodyweight squats",
+    "10 glute bridges",
+    "10 hip hinges",
+    "8 reverse lunges per side",
+    "20-second deep squat hold"
+  ],
+  "Strength B": [
+    "1 minute brisk march",
+    "10 arm circles each direction",
+    "8 kettlebell halos each direction",
+    "8 cat-cows",
+    "10 shoulder taps",
+    "8 reverse lunges per side"
+  ],
+  "Strength C": [
+    "1 minute easy jump rope or march",
+    "10 air squats",
+    "10 hip hinges",
+    "10 alternating walking lunges",
+    "10 light medicine-ball slams",
+    "20 mountain climbers"
+  ],
+  "Conditioning": [
+    "1 minute easy jump rope",
+    "10 air squats",
+    "8 world’s greatest stretches total",
+    "20 high knees",
+    "20 butt kicks",
+    "10 walking lunges"
+  ],
+  "Mobility": [
+    "5 slow breaths",
+    "8 cat-cows",
+    "8 thoracic rotations per side",
+    "30-second hip flexor stretch per side",
+    "30-second calf stretch per side"
+  ],
+  "Recovery": [
+    "1 minute easy marching",
+    "10 shoulder circles",
+    "10 ankle circles per side",
+    "8 gentle hip hinges",
+    "5 slow breaths"
+  ]
+};
+
+const missionBank = {
+  body: [
+    "Complete every scheduled workout this week.",
+    "Add one extra set to one strength movement.",
+    "Practice double-unders for five minutes twice this week.",
+    "Use the 20-minute minimum workout if a morning goes sideways.",
+    "Finish 500 total kettlebell swings this week.",
+    "Take one full recovery day without guilt."
+  ],
+  money: [
+    "Buy no makeup or unnecessary beauty products this week.",
+    "Log every skipped beauty purchase in the Freedom Fund.",
+    "Move $50 into savings instead of buying something optional.",
+    "Use the 30-day wishlist for every tempting beauty purchase.",
+    "Have one completely no-spend day.",
+    "Shop your own makeup collection before browsing online."
+  ],
+  home: [
+    "Spend 20 minutes clearing one small area.",
+    "Finish one task that has been hanging over you.",
+    "Declutter one drawer.",
+    "Set up next week’s workout area before Sunday night.",
+    "Donate or discard five unused items.",
+    "Reset the kitchen before bed three nights this week."
+  ],
+  life: [
+    "Call one person you have been meaning to reach.",
+    "Schedule one overdue appointment.",
+    "Eat one meal away from your workstation.",
+    "Take your dog somewhere slightly different for one walk.",
+    "Protect one hour this week for something enjoyable.",
+    "Go to bed on time at least three nights."
+  ],
+  learn: [
+    "Listen to 30 minutes of an audiobook.",
+    "Learn one new mobility drill.",
+    "Read one article that supports your current goals.",
+    "Try one new high-protein recipe.",
+    "Watch one exercise demo and improve your form.",
+    "Write down one thing you learned about yourself this week."
+  ],
+  coach: [
+    "Collect three intentional sunrises this week.",
+    "Make one new Yogurt Bowl Lab recipe.",
+    "Do one thing today that Future Noelle will thank you for.",
+    "Finish three 30-oz bottles before 6:00 PM one day this week.",
+    "Wear a makeup look created entirely from forgotten products.",
+    "Choose progress over perfection once on purpose."
+  ]
+};
+
+function weekNumber(dateString){
+  const d = new Date(dateString+"T12:00:00");
+  const start = new Date(d.getFullYear(),0,1);
+  return Math.floor((d-start)/604800000);
+}
+function missionSet(){
+  const d = day();
+  const seed = weekNumber(d.date) + Number(S.missionRefresh||0);
+  const pick = (arr,offset)=>arr[(seed+offset)%arr.length];
+  return {
+    body: pick(missionBank.body,0),
+    money: pick(missionBank.money,1),
+    home: pick(missionBank.home,2),
+    life: pick(missionBank.life,3),
+    learn: pick(missionBank.learn,4),
+    coach: pick(missionBank.coach,5)
+  };
+}
+
+function renderBody(){const d=day(),list=APP.workouts[d.workout]||APP.workouts.Recovery;workoutTitle.textContent=d.workout;const wu=warmups[d.workout]||warmups.Recovery;warmupList.innerHTML=wu.map((x,i)=>`<div class="meal"><b>${i+1}.</b> ${x}</div>`).join("");exerciseList.innerHTML=list.map(x=>`<div class="meal"><b>${x.name}</b><div>${x.sets}</div><div class="small">${x.demo}</div></div>`).join("");sunrises.textContent=APP.days.filter(x=>habits.filter(h=>getH(x.date,h[0])).length>=3).length;workouts.textContent=APP.days.filter(x=>getH(x.date,"workout")).length;walks.textContent=APP.days.filter(x=>getH(x.date,"dog")).length;waterDays.textContent=APP.days.filter(x=>Number(S.water[x.date]||0)>=3).length;}
 let left=2400,tick=null;function drawTimer(){timer.textContent=`${pad(Math.floor(left/60))}:${pad(left%60)}`} startTimer.onclick=()=>{if(tick)return;tick=setInterval(()=>{if(left>0){left--;drawTimer()}},1000)};pauseTimer.onclick=()=>{clearInterval(tick);tick=null};document.querySelectorAll("[data-min]").forEach(b=>b.onclick=()=>{clearInterval(tick);tick=null;left=Number(b.dataset.min)*60;drawTimer()});
 saveCheckin.onclick=()=>{S.checkins.push({date:today(),weight:weight.value,waist:waist.value,squat:squat.value,pushups:pushups.value});save()};
 const grocerySections={"Proteins":["Chicken","Eggs","Greek yogurt","Cottage cheese","Protein powder","Salmon"],"Fiber + produce":["Berries","Apples","Broccoli","Beans","Chia","Flax"],"Bowl Lab":["Granola","High-fiber cereal","PB2","Almonds","Cinnamon"]};
@@ -123,8 +254,28 @@ function renderFuel(){const d=day();mealList.innerHTML=Object.entries(d.meals).m
 function vaultStreakCalc(){let s=0,d=new Date(today()+"T12:00:00");while(S.vault.days[d.toLocaleDateString("en-CA")]){s++;d.setDate(d.getDate()-1)}return s}
 function renderVault(){noBuy.checked=!!S.vault.days[today()];vaultStreak.textContent=vaultStreakCalc();vaultDays.textContent=Object.values(S.vault.days).filter(Boolean).length;vaultSaved.textContent="$"+S.vault.skipped.reduce((a,x)=>a+Number(x.amount||0),0).toFixed(0);vaultWish.textContent=S.vault.wish.length;skipList.innerHTML=S.vault.skipped.slice().reverse().map(x=>`<div class="meal"><b>$${Number(x.amount).toFixed(2)}</b> ${x.item}</div>`).join("");wishList.innerHTML=S.vault.wish.map((x,i)=>`<div class="meal"><b>${x.item}</b> · $${Number(x.price||0).toFixed(2)}<div class="small">${x.why||""}</div><button class="ghost" data-rm="${i}">Remove</button></div>`).join("");document.querySelectorAll("[data-rm]").forEach(b=>b.onclick=()=>{S.vault.wish.splice(Number(b.dataset.rm),1);save();renderVault()});}
 noBuy.onchange=e=>{S.vault.days[today()]=e.target.checked;save();renderVault()};addSkip.onclick=()=>{if(!skipItem.value||!skipAmount.value)return;S.vault.skipped.push({item:skipItem.value,amount:Number(skipAmount.value)});skipItem.value="";skipAmount.value="";save();renderVault()};addWish.onclick=()=>{if(!wishItem.value)return;S.vault.wish.push({item:wishItem.value,price:Number(wishPrice.value||0),why:wishWhy.value,date:today()});wishItem.value="";wishPrice.value="";wishWhy.value="";save();renderVault()};const missions=["Wear a forgotten lipstick.","Use one neglected palette.","Clean five brushes.","Rediscover an old blush.","Organize one beauty drawer."];stashBtn.onclick=()=>stashMission.textContent=missions[Math.floor(Math.random()*missions.length)];
-function renderWeek(){mBody.value=S.missions.body||"";mMoney.value=S.missions.money||"";mHome.value=S.missions.home||"";mLife.value=S.missions.life||"";mLearn.value=S.missions.learn||"";const c=APP.challenges.find(c=>day().date>=c.start&&day().date<=c.end)||APP.challenges[0],v=Number(S.challenge[c.name]||0);challengeName.textContent=c.name;challengeText.textContent=`${v} / ${c.goal} ${c.unit}`;challengeBar.style.width=Math.min(100,v/c.goal*100)+"%";rWorked.value=S.review.worked||"";rHard.value=S.review.hard||"";rAnnoy.value=S.review.annoy||"";rChange.value=S.review.change||"";}
-saveMissions.onclick=()=>{S.missions={body:mBody.value,money:mMoney.value,home:mHome.value,life:mLife.value,learn:mLearn.value};save()};addChallenge.onclick=()=>{const c=APP.challenges.find(c=>day().date>=c.start&&day().date<=c.end)||APP.challenges[0];S.challenge[c.name]=Number(S.challenge[c.name]||0)+Number(challengeAdd.value||0);challengeAdd.value="";save();renderWeek()};saveReview.onclick=()=>{S.review={worked:rWorked.value,hard:rHard.value,annoy:rAnnoy.value,change:rChange.value,date:today()};save()};
+function renderWeek(){
+  const ms=missionSet();
+  mBody.textContent=ms.body;
+  mMoney.textContent=ms.money;
+  mHome.textContent=ms.home;
+  mLife.textContent=ms.life;
+  mLearn.textContent=ms.learn;
+  coachPick.textContent=ms.coach;
+  const c=APP.challenges.find(c=>day().date>=c.start&&day().date<=c.end)||APP.challenges[0],v=Number(S.challenge[c.name]||0);
+  challengeName.textContent=c.name;
+  challengeText.textContent=`${v} / ${c.goal} ${c.unit}`;
+  challengeBar.style.width=Math.min(100,v/c.goal*100)+"%";
+  rWorked.value=S.review.worked||"";
+  rHard.value=S.review.hard||"";
+  rAnnoy.value=S.review.annoy||"";
+  rChange.value=S.review.change||"";
+}
+refreshMissions.onclick=()=>{
+  S.missionRefresh=Number(S.missionRefresh||0)+1;
+  save();
+  renderWeek();
+};save()};addChallenge.onclick=()=>{const c=APP.challenges.find(c=>day().date>=c.start&&day().date<=c.end)||APP.challenges[0];S.challenge[c.name]=Number(S.challenge[c.name]||0)+Number(challengeAdd.value||0);challengeAdd.value="";save();renderWeek()};saveReview.onclick=()=>{S.review={worked:rWorked.value,hard:rHard.value,annoy:rAnnoy.value,change:rChange.value,date:today()};save()};
 document.querySelectorAll("[data-view]").forEach(b=>b.onclick=()=>{document.querySelectorAll(".view").forEach(v=>v.classList.toggle("active",v.id===b.dataset.view));document.querySelectorAll("[data-view]").forEach(x=>x.classList.toggle("active",x===b));window.scrollTo(0,0)});
 document.querySelectorAll("[data-panel]").forEach(b=>b.onclick=()=>{document.querySelectorAll("#body .panel").forEach(p=>p.classList.toggle("active",p.id===b.dataset.panel));document.querySelectorAll("[data-panel]").forEach(x=>x.classList.toggle("active",x===b))});
 document.querySelectorAll("[data-fuel]").forEach(b=>b.onclick=()=>{document.querySelectorAll("#fuel .panel").forEach(p=>p.classList.toggle("active",p.id===b.dataset.fuel));document.querySelectorAll("[data-fuel]").forEach(x=>x.classList.toggle("active",x===b))});

@@ -55,10 +55,6 @@ button{font:inherit} .primary{border:0;border-radius:13px;padding:12px 15px;back
 .makeup-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
 .makeup-card{background:#faf8fc;border:1px solid var(--line);border-radius:14px;padding:12px}
 @media(min-width:680px){.quick-grid,.makeup-grid{grid-template-columns:repeat(4,1fr)}}
-
-.step-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-.step-row button{border:1px solid var(--line);background:white;border-radius:999px;padding:9px 12px;font-weight:700}
-.step-number{font-size:30px;font-weight:850}
 </style>
 </head>
 <body>
@@ -82,27 +78,21 @@ button{font:inherit} .primary{border:0;border-radius:13px;padding:12px 15px;back
       <div class="quick-card"><div class="eyebrow">Workout</div><strong id="quickWorkout"></strong></div>
       <div class="quick-card"><div class="eyebrow">Walk</div><strong id="quickWalk"></strong></div>
       <div class="quick-card"><div class="eyebrow">Water</div><strong id="quickWater"></strong></div>
-<div class="quick-card"><div class="eyebrow">Steps</div><strong id="quickSteps"></strong></div>
       <div class="quick-card"><div class="eyebrow">Bowl</div><strong id="quickBowl"></strong></div>
     </div>
-    <div class="card"><div class="eyebrow">Today’s Top 3</div><div id="top3"></div><button class="primary" id="saveTop3">Save Top 3</button></div>
+<div class="card">
+<div class="eyebrow">🚶 Step Tracker</div>
+<h2>10,000 Step Goal</h2>
+<input id="stepInput" type="number" placeholder="Enter current steps">
+<button class="primary" id="saveSteps" style="margin-top:10px">Update Steps</button>
+<div class="progress" style="margin-top:12px"><div id="stepBar"></div></div>
+<p class="small" id="stepText"></p>
+</div>
+<div class="card"><div class="eyebrow">Today’s Top 3</div><div id="top3"></div><button class="primary" id="saveTop3">Save Top 3</button></div>
   <div class="card"><div class="eyebrow">Morning thoughts</div><textarea id="amNote" placeholder="What is on your mind this morning?"></textarea><button class="primary" id="saveAm" style="margin-top:10px">Save note</button></div>
   <div class="card"><div class="eyebrow">Morning flow</div><p class="small" id="sunriseText"></p><div id="flowList"></div></div>
   <div class="card"><div class="eyebrow">Hydration</div><div class="water" id="water"></div><p class="small" id="waterText"></p></div>
-  <div class="card">
-      <div class="eyebrow">Steps</div>
-      <div class="step-number" id="stepCount">0</div>
-      <div class="progress"><div id="stepBar"></div></div>
-      <p class="small" id="stepMessage">Goal: 10,000 steps</p>
-      <div class="step-row">
-        <button data-stepadd="1000">+1,000</button>
-        <button data-stepadd="2500">+2,500</button>
-        <button data-stepadd="5000">+5,000</button>
-        <button id="editSteps">Enter total</button>
-        <button id="resetSteps">Reset</button>
-      </div>
-    </div>
-    <div class="card"><div class="eyebrow">Tonight</div><h2 id="bowlTonight"></h2><p class="small">Dessert is part of the plan.</p></div>
+  <div class="card"><div class="eyebrow">Tonight</div><h2 id="bowlTonight"></h2><p class="small">Dessert is part of the plan.</p></div>
   <div class="card"><div class="eyebrow">Evening recap</div><label>Biggest win<textarea id="pmWin"></textarea></label><label>Gratitude<textarea id="pmGratitude"></textarea></label><label>Brain dump<textarea id="pmDump"></textarea></label><button class="primary" id="savePm">Save recap</button></div>
 </section>
 
@@ -113,8 +103,7 @@ button{font:inherit} .primary{border:0;border-radius:13px;padding:12px 15px;back
     <div class="card"><div class="eyebrow">Timer</div><div class="timer" id="timer">40:00</div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="primary" id="startTimer">Start</button><button class="ghost" id="pauseTimer">Pause</button><button class="ghost" data-min="20">20</button><button class="ghost" data-min="40">40</button><button class="ghost" data-min="45">45</button></div></div>
   </div>
   <div id="progress" class="panel">
-    <div class="stat-grid"><div class="stat"><span class="small">Sunrises</span><b id="sunrises">0</b></div><div class="stat"><span class="small">Workouts</span><b id="workouts">0</b></div><div class="stat"><span class="small">Dog walks</span><b id="walks">0</b></div><div class="stat"><span class="small">90 oz days</span><b id="waterDays">0</b></div>
-<div class="stat"><span class="small">10K step days</span><b id="stepDays">0</b></div></div>
+    <div class="stat-grid"><div class="stat"><span class="small">Sunrises</span><b id="sunrises">0</b></div><div class="stat"><span class="small">Workouts</span><b id="workouts">0</b></div><div class="stat"><span class="small">Dog walks</span><b id="walks">0</b></div><div class="stat"><span class="small">90 oz days</span><b id="waterDays">0</b></div></div>
     <div class="card"><div class="eyebrow">Check-in</div><label>Weight<input id="weight" type="number" step=".1"></label><label>Waist<input id="waist" type="number" step=".1"></label><label>Goblet squat<input id="squat" type="number"></label><label>Push-ups<input id="pushups" type="number"></label><button class="primary" id="saveCheckin">Save check-in</button></div>
   </div>
 </section>
@@ -175,7 +164,7 @@ const save=()=>localStorage.setItem(KEY,JSON.stringify(S));
 const today=()=>new Date().toLocaleDateString("en-CA");
 const day=()=>APP.days.find(d=>d.date===today())||APP.days[0];
 const hk=(d,k)=>d+"_"+k; const getH=(d,k)=>!!S.h[hk(d,k)];
-const habits=[["workout","Workout"],["dog","Dog walk"],["steps","10,000 steps"],["protein","Protein"],["water","3 bottles"],["bowl","Power Bowl"]];
+const habits=[["workout","Workout"],["dog","Dog walk"],["protein","Protein"],["water","3 bottles"],["bowl","Power Bowl"]];
 function pad(n){return String(n).padStart(2,"0")} function time(t){t=((Math.round(t)%1440)+1440)%1440;const h=Math.floor(t/60),m=t%60;return `${h%12||12}:${pad(m)} ${h>=12?"PM":"AM"}`;}
 function sunrise(ds){const lat=33.6595,lon=-117.9988,date=new Date(ds+"T12:00:00"),start=new Date(date.getFullYear(),0,0);const N=Math.floor((date-start)/86400000),lh=lon/15,t=N+((6-lh)/24),M=.9856*t-3.289,deg=Math.PI/180;let L=(M+1.916*Math.sin(M*deg)+.020*Math.sin(2*M*deg)+282.634+360)%360;let RA=(Math.atan(.91764*Math.tan(L*deg))/deg+360)%360;RA=(RA+Math.floor(L/90)*90-Math.floor(RA/90)*90)/15;const sd=.39782*Math.sin(L*deg),cd=Math.cos(Math.asin(sd)),cosH=(Math.cos(90.833*deg)-sd*Math.sin(lat*deg))/(cd*Math.cos(lat*deg)),H=(360-Math.acos(Math.max(-1,Math.min(1,cosH)))/deg)/15,T=H+RA-.06571*t-6.622,UT=(T-lh+24)%24,off=date<new Date("2026-11-01T02:00:00")?-7:-8;return((UT+off+24)%24)*60;}
 function flow(d){const dow=new Date(d.date+"T12:00:00").getDay(),sr=sunrise(d.date),safe=sr-26;let wake,ws,wm,walk,chores,ready,work,buffer;if(dow===1){wake=300;ws=310;wm=45;walk=45;chores=40;ready=40;work=540;buffer=30}else if(dow>=2&&dow<=5){wake=260;ws=270;wm=40;walk=40;chores=30;ready=40;work=450;buffer=30}else{wake=290;ws=300;wm=40;walk=40;chores=30;ready=40;work=480;buffer=30}const we=ws+wm,re=work-buffer,rs=re-ready,wstart=Math.max(we,safe),wend=wstart+walk;let before=Math.min(chores,Math.max(0,wstart-we)),after=Math.max(0,chores-before);if(wend+after>rs)after=Math.max(0,rs-wend);const rows=[[time(wake),"Wake, water, coffee, creatine"],[`${time(ws)}–${time(we)}`,d.workout+" — workout first"]];if(before)rows.push([`${time(we)}–${time(we+before)}`,"Morning reset"]);rows.push([`${time(wstart)}–${time(wend)}`,"Dog walk at first safe light"]);if(after)rows.push([`${time(wend)}–${time(wend+after)}`,"Morning reset"]);rows.push([`${time(rs)}–${time(re)}`,"Get ready — last"]);rows.push([`${time(re)}–${time(work)}`,"Breakfast, Top 3, settle in"]);rows.push([time(work),"At workstation"]);return{rows,sr,safe};}
@@ -197,34 +186,7 @@ function coachMode(d){
  return{title:"Today’s assignment",text:"Follow the next step. No negotiating and no perfection required."};
 }
 
-
-function getSteps(d){ return Number(S.steps[d]||0); }
-function setSteps(d,total){
-  S.steps[d]=Math.max(0,Math.round(total));
-  S.h[hk(d,"steps")]=S.steps[d]>=10000;
-  save();
-  renderAll();
-}
-function renderSteps(d){
-  const count=getSteps(d);
-  stepCount.textContent=count.toLocaleString()+" steps";
-  stepBar.style.width=Math.min(100,count/10000*100)+"%";
-  stepMessage.textContent=count>=10000 ? "10K goal reached ✓" : (10000-count).toLocaleString()+" steps to go";
-  quickSteps.textContent=count.toLocaleString();
-}
-
-function renderHome(){const d=day(),done=habits.filter(x=>getH(d.date,x[0])).length;dateLine.textContent=d.display+" · Day "+d.dayNumber;greeting.textContent="Good morning, Noelle.";coach.textContent=["You only have to start.","Protect the morning and the rest gets easier.","Today does not need to be perfect to count."][(d.dayNumber-1)%3];dayProgress.style.width=(done/habits.length*100)+"%";dayProgressText.textContent=done+" of "+habits.length+" completed";const pct=Math.round(done/habits.length*100);progressRing.style.setProperty("--pct",pct+"%");ringText.textContent=pct+"%";const cm=coachMode(d);coachModeTitle.textContent=cm.title;coachModeText.textContent=cm.text;winList.innerHTML=habits.map(([k,l])=>`<label class="check"><input type="checkbox" data-h="${k}" ${getH(d.date,k)?"checked":""}><span>${l}</span></label>`).join("");document.querySelectorAll("[data-h]").forEach(x=>x.onchange=e=>{S.h[hk(d.date,e.target.dataset.h)]=e.target.checked;save();renderAll()});const top=S.top[d.date]||[{},{},{}];top3.innerHTML=[0,1,2].map(i=>`<div class="top3"><input type="checkbox" data-tc="${i}" ${top[i].done?"checked":""}><input data-tt="${i}" value="${top[i].text||""}" placeholder="Must-do #${i+1}"></div>`).join("");const n=S.notes[d.date]||{};amNote.value=n.am||"";pmWin.value=n.win||"";pmGratitude.value=n.grat||"";pmDump.value=n.dump||"";const f=flow(d);sunriseText.textContent=`Sunrise ${time(f.sr)} · earliest coyote-conscious walk ${time(f.safe)}`;flowList.innerHTML=f.rows.map(r=>`<div class="flow"><strong>${r[0]}</strong><div>${r[1]}</div></div>`).join("");const wc=Number(S.water[d.date]||0);water.innerHTML=[1,2,3,4].map(i=>`<button class="${i<=wc?"on":""}" data-water="${i}">🥤</button>`).join("");waterText.textContent=`${wc*30} oz · ${wc}/4 bottles`;document.querySelectorAll("[data-water]").forEach(b=>b.onclick=()=>{const i=Number(b.dataset.water);S.water[d.date]=i===wc?i-1:i;S.h[hk(d.date,"water")]=S.water[d.date]>=3;save();renderAll()});bowlTonight.textContent="🥣 "+d.meals["Power Bowl"];quickWorkout.textContent=d.workout;quickWalk.textContent=time(f.safe);quickWater.textContent=(Number(S.water[d.date]||0)*30)+" oz";quickBowl.textContent=d.meals["Power Bowl"];renderSteps(d.date);}
-document.querySelectorAll("[data-stepadd]").forEach(b=>b.onclick=()=>{
-  const d=day().date;
-  setSteps(d,getSteps(d)+Number(b.dataset.stepadd));
-});
-editSteps.onclick=()=>{
-  const d=day().date;
-  const value=prompt("Enter today’s total steps:",getSteps(d));
-  if(value!==null && value.trim()!=="" && !isNaN(Number(value))) setSteps(d,Number(value));
-};
-resetSteps.onclick=()=>setSteps(day().date,0);
-
+function renderHome(){const d=day(),done=habits.filter(x=>getH(d.date,x[0])).length;dateLine.textContent=d.display+" · Day "+d.dayNumber;greeting.textContent="Good morning, Noelle.";coach.textContent=["You only have to start.","Protect the morning and the rest gets easier.","Today does not need to be perfect to count."][(d.dayNumber-1)%3];dayProgress.style.width=(done/habits.length*100)+"%";dayProgressText.textContent=done+" of "+habits.length+" completed";const pct=Math.round(done/habits.length*100);progressRing.style.setProperty("--pct",pct+"%");ringText.textContent=pct+"%";const cm=coachMode(d);coachModeTitle.textContent=cm.title;coachModeText.textContent=cm.text;winList.innerHTML=habits.map(([k,l])=>`<label class="check"><input type="checkbox" data-h="${k}" ${getH(d.date,k)?"checked":""}><span>${l}</span></label>`).join("");document.querySelectorAll("[data-h]").forEach(x=>x.onchange=e=>{S.h[hk(d.date,e.target.dataset.h)]=e.target.checked;save();renderAll()});const top=S.top[d.date]||[{},{},{}];top3.innerHTML=[0,1,2].map(i=>`<div class="top3"><input type="checkbox" data-tc="${i}" ${top[i].done?"checked":""}><input data-tt="${i}" value="${top[i].text||""}" placeholder="Must-do #${i+1}"></div>`).join("");const n=S.notes[d.date]||{};amNote.value=n.am||"";pmWin.value=n.win||"";pmGratitude.value=n.grat||"";pmDump.value=n.dump||"";const f=flow(d);sunriseText.textContent=`Sunrise ${time(f.sr)} · earliest coyote-conscious walk ${time(f.safe)}`;flowList.innerHTML=f.rows.map(r=>`<div class="flow"><strong>${r[0]}</strong><div>${r[1]}</div></div>`).join("");const wc=Number(S.water[d.date]||0);water.innerHTML=[1,2,3,4].map(i=>`<button class="${i<=wc?"on":""}" data-water="${i}">🥤</button>`).join("");waterText.textContent=`${wc*30} oz · ${wc}/4 bottles`;document.querySelectorAll("[data-water]").forEach(b=>b.onclick=()=>{const i=Number(b.dataset.water);S.water[d.date]=i===wc?i-1:i;S.h[hk(d.date,"water")]=S.water[d.date]>=3;save();renderAll()});bowlTonight.textContent="🥣 "+d.meals["Power Bowl"];quickWorkout.textContent=d.workout;quickWalk.textContent=time(f.safe);quickWater.textContent=(Number(S.water[d.date]||0)*30)+" oz";quickBowl.textContent=d.meals["Power Bowl"];}
 saveTop3.onclick=()=>{const d=day().date;S.top[d]=[0,1,2].map(i=>({text:document.querySelector(`[data-tt="${i}"]`).value,done:document.querySelector(`[data-tc="${i}"]`).checked}));save()};saveAm.onclick=()=>{const d=day().date;S.notes[d]=S.notes[d]||{};S.notes[d].am=amNote.value;save()};savePm.onclick=()=>{const d=day().date;S.notes[d]=S.notes[d]||{};Object.assign(S.notes[d],{win:pmWin.value,grat:pmGratitude.value,dump:pmDump.value});save()};
 
 const warmups = {
@@ -346,7 +308,7 @@ function missionSet(){
   };
 }
 
-function renderBody(){const d=day(),list=APP.workouts[d.workout]||APP.workouts.Recovery;workoutTitle.textContent=d.workout;const wu=warmups[d.workout]||warmups.Recovery;warmupList.innerHTML=wu.map((x,i)=>`<div class="meal"><b>${i+1}.</b> ${x}</div>`).join("");exerciseList.innerHTML=list.map(x=>`<div class="meal"><b>${x.name}</b><div>${x.sets}</div><div class="small">${x.demo}</div></div>`).join("");const cd=cooldowns[d.workout]||cooldowns.Recovery;cooldownList.innerHTML=cd.map((x,i)=>`<div class="meal"><b>${i+1}.</b> ${x}</div>`).join("");sunrises.textContent=APP.days.filter(x=>habits.filter(h=>getH(x.date,h[0])).length>=3).length;workouts.textContent=APP.days.filter(x=>getH(x.date,"workout")).length;walks.textContent=APP.days.filter(x=>getH(x.date,"dog")).length;waterDays.textContent=APP.days.filter(x=>Number(S.water[x.date]||0)>=3).length;stepDays.textContent=APP.days.filter(x=>getSteps(x.date)>=10000).length;}
+function renderBody(){const d=day(),list=APP.workouts[d.workout]||APP.workouts.Recovery;workoutTitle.textContent=d.workout;const wu=warmups[d.workout]||warmups.Recovery;warmupList.innerHTML=wu.map((x,i)=>`<div class="meal"><b>${i+1}.</b> ${x}</div>`).join("");exerciseList.innerHTML=list.map(x=>`<div class="meal"><b>${x.name}</b><div>${x.sets}</div><div class="small">${x.demo}</div></div>`).join("");const cd=cooldowns[d.workout]||cooldowns.Recovery;cooldownList.innerHTML=cd.map((x,i)=>`<div class="meal"><b>${i+1}.</b> ${x}</div>`).join("");sunrises.textContent=APP.days.filter(x=>habits.filter(h=>getH(x.date,h[0])).length>=3).length;workouts.textContent=APP.days.filter(x=>getH(x.date,"workout")).length;walks.textContent=APP.days.filter(x=>getH(x.date,"dog")).length;waterDays.textContent=APP.days.filter(x=>Number(S.water[x.date]||0)>=3).length;}
 let left=2400,tick=null;function drawTimer(){timer.textContent=`${pad(Math.floor(left/60))}:${pad(left%60)}`} startTimer.onclick=()=>{if(tick)return;tick=setInterval(()=>{if(left>0){left--;drawTimer()}},1000)};pauseTimer.onclick=()=>{clearInterval(tick);tick=null};document.querySelectorAll("[data-min]").forEach(b=>b.onclick=()=>{clearInterval(tick);tick=null;left=Number(b.dataset.min)*60;drawTimer()});
 saveCheckin.onclick=()=>{S.checkins.push({date:today(),weight:weight.value,waist:waist.value,squat:squat.value,pushups:pushups.value});save()};
 const grocerySections={"Proteins":["Chicken","Eggs","Greek yogurt","Cottage cheese","Protein powder","Salmon"],"Fiber + produce":["Berries","Apples","Broccoli","Beans","Chia","Flax"],"Bowl Lab":["Granola","High-fiber cereal","PB2","Almonds","Cinnamon"]};
@@ -365,6 +327,26 @@ document.querySelectorAll("[data-protein]").forEach(b=>b.onclick=()=>{
 document.querySelectorAll("[data-fiber]").forEach(b=>b.onclick=()=>{
  const d=day().date;S.nutrition[d]=S.nutrition[d]||{};S.nutrition[d].fiber=b.dataset.fiber;save();renderAll();
 });
+
+
+function renderSteps(){
+ const d=day().date;
+ const val=Number(S.steps[d]||0);
+ stepInput.value=val||"";
+ const pct=Math.min(100,val/10000*100);
+ stepBar.style.width=pct+"%";
+ let msg=`${val.toLocaleString()} / 10,000`;
+ if(val>=12000) msg+=" ⭐ Bonus!";
+ else if(val>=10000) msg+=" 🌅 Goal reached!";
+ else if(val>=8000) msg+=` · ${10000-val} to go`;
+ else msg+=` · ${10000-val} remaining`;
+ stepText.textContent=msg;
+}
+saveSteps.onclick=()=>{
+ S.steps[day().date]=Number(stepInput.value||0);
+ save();
+ renderAll();
+};
 
 function renderVault(){
 const seed=new Date(today()+"T12:00:00").getDate();
@@ -405,7 +387,7 @@ saveReview.onclick=()=>{S.review={worked:rWorked.value,hard:rHard.value,annoy:rA
 document.querySelectorAll("[data-view]").forEach(b=>b.onclick=()=>{document.querySelectorAll(".view").forEach(v=>v.classList.toggle("active",v.id===b.dataset.view));document.querySelectorAll("[data-view]").forEach(x=>x.classList.toggle("active",x===b));window.scrollTo(0,0)});
 document.querySelectorAll("[data-panel]").forEach(b=>b.onclick=()=>{document.querySelectorAll("#body .panel").forEach(p=>p.classList.toggle("active",p.id===b.dataset.panel));document.querySelectorAll("[data-panel]").forEach(x=>x.classList.toggle("active",x===b))});
 document.querySelectorAll("[data-fuel]").forEach(b=>b.onclick=()=>{document.querySelectorAll("#fuel .panel").forEach(p=>p.classList.toggle("active",p.id===b.dataset.fuel));document.querySelectorAll("[data-fuel]").forEach(x=>x.classList.toggle("active",x===b))});
-function renderAll(){renderHome();renderBody();renderFuel();renderNutrition();renderVault();renderWeek();drawTimer()} renderAll(); if("serviceWorker"in navigator)addEventListener("load",()=>navigator.serviceWorker.register("./service-worker.js").catch(()=>{}));
+function renderAll(){renderHome();renderBody();renderFuel();renderNutrition();renderSteps();renderVault();renderWeek();drawTimer()} renderAll(); if("serviceWorker"in navigator)addEventListener("load",()=>navigator.serviceWorker.register("./service-worker.js").catch(()=>{}));
 </script>
 </body>
 </html>

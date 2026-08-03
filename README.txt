@@ -1,10 +1,17 @@
-THE 4:20 CLUB — VERSION 2.7 MORNING FLOW RESTORED
+THE 4:20 CLUB — VERSION 3.0 AUTOMATIC DAILY TIMELINE
 
-Fixes:
-- Morning Flow restored near the top of Home
-- Launch Sequence remains visible and separate
-- Today’s selected Mission 4 tasks appear inside Phase 4 as checkboxes
-- Tomorrow Starts Tonight task library moved to the evening section
-- Custom task library and learning behavior preserved
+The morning schedule now generates itself automatically.
 
-Upload every file to GitHub and replace the existing versions.
+Rules:
+- Monday: 5:00 AM wake, 9:00 AM work start
+- Tuesday-Friday: 4:20 AM wake, 7:30 AM work start
+- Saturday-Sunday: 4:20 AM wake, 8:00 AM work start
+- Phase 1 is always 20 minutes
+- Workout follows Phase 1
+- Dog walk starts no earlier than first safe light
+- Morning Reset uses only the time that remains
+- Getting ready stays last
+- Work buffer is protected
+
+All prior features are preserved.
+Upload all files to GitHub and replace the existing versions.

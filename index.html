@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#2d2140">
+<meta name="theme-color" content="#261d35">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="4:20 Club">
@@ -11,819 +11,124 @@
 <link rel="apple-touch-icon" href="icon-192.png">
 <title>The 4:20 Club</title>
 <style>
-:root {
-  --bg:#f6f4f1; --card:#ffffff; --ink:#211b2a; --muted:#706a78; --accent:#6d4aa2;
-  --accent-soft:#eee8f7; --line:#e5e0e9; --good:#2f7d4a; --gold:#ad7b21;
-}
-*{box-sizing:border-box}
-body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink)}
-header{background:#2d2140;color:white;padding:18px 18px 14px;position:sticky;top:0;z-index:10}
-header h1{margin:0;font-size:24px} header p{margin:4px 0 0;color:#ddd4e8;font-size:13px}
-main{max-width:900px;margin:auto;padding:16px 16px 100px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:14px}
-.hero{background:var(--accent-soft)}
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-.metric{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px}
-.metric strong{display:block;font-size:24px}
+:root{--bg:#f4f0ea;--ink:#211a28;--muted:#756f78;--card:#fff;--line:#e6dfe8;--accent:#7651a8;--soft:#eee7f7;--gold:#d39a3d}
+*{box-sizing:border-box} body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink)}
+.app-header{background:linear-gradient(160deg,#261d35,#4b3565);color:white;padding:22px 18px 28px;border-radius:0 0 28px 28px}
+.app-header h1{margin:0;font-size:26px} .app-header p{margin:5px 0 0;color:#e7dff0}
+main{max-width:760px;margin:auto;padding:16px 16px 100px}
+.view{display:none} .view.active{display:block}
+.hero-card{margin-top:-28px;background:white;border-radius:22px;padding:18px;border:1px solid var(--line);box-shadow:0 10px 30px rgba(40,25,55,.08)}
+.card{background:white;border:1px solid var(--line);border-radius:18px;padding:16px;margin-top:14px}
+.eyebrow{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+h2{font-size:19px;margin:6px 0 10px} h3{font-size:15px;margin:0 0 8px}
 .small{font-size:13px;color:var(--muted)}
-.badge{display:inline-block;background:var(--accent-soft);color:var(--accent);font-size:12px;font-weight:700;padding:6px 10px;border-radius:999px}
-h2{font-size:18px;margin:0 0 10px} h3{font-size:15px;margin:14px 0 8px}
-.tabs{display:flex;gap:8px;overflow:auto;padding-bottom:4px;margin-bottom:14px}
-.tabs button{border:1px solid var(--line);background:white;padding:9px 12px;border-radius:999px;font-weight:700;white-space:nowrap}
-.tabs button.active{background:var(--accent);color:white;border-color:var(--accent)}
-.section{display:none} .section.active{display:block}
-.schedule-row,.meal-row,.exercise-row,.grocery-row{display:grid;grid-template-columns:110px 1fr;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
-.schedule-row:last-child,.meal-row:last-child,.exercise-row:last-child,.grocery-row:last-child{border-bottom:0}
-.check-row{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
-.check-row input[type="checkbox"]{width:22px;height:22px;min-width:22px;accent-color:var(--accent);margin-top:1px}
-.top3-row{display:grid;grid-template-columns:28px 1fr;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line)}
-.top3-row:last-child{border-bottom:0}.top3-row input[type="text"]{font-size:16px;min-height:44px}
-button.primary{border:0;background:var(--accent);color:white;border-radius:12px;padding:11px 14px;font-weight:700}
-button.secondary{border:1px solid var(--line);background:white;border-radius:12px;padding:10px 12px;font-weight:700}
-input,textarea{width:100%;border:1px solid var(--line);border-radius:12px;padding:10px;font:inherit;background:white}
-.progress{height:10px;background:#e9e5ec;border-radius:999px;overflow:hidden}
-.progress>div{height:100%;background:var(--accent);width:0}
-.timer{font-size:42px;font-weight:800;text-align:center;letter-spacing:1px;margin:14px 0}
-.timer-controls{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
-.demo{display:none;background:#faf9fb;border-radius:12px;padding:10px;margin-top:8px}
-.demo.open{display:block}
-.badge-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-.badge-card{border:1px solid var(--line);border-radius:14px;padding:14px;text-align:center;opacity:.45}
-.badge-card.earned{opacity:1;background:#fff9e8;border-color:#e4c778}
-.badge-icon{font-size:30px}
-.chart-wrap{height:180px;border-left:1px solid var(--line);border-bottom:1px solid var(--line);padding:10px;display:flex;align-items:flex-end;gap:10px}
-.bar{flex:1;background:var(--accent);border-radius:6px 6px 0 0;min-height:4px;position:relative}
-.bar span{position:absolute;bottom:-28px;left:50%;transform:translateX(-50%);font-size:11px;color:var(--muted);white-space:nowrap}
-.nav{position:fixed;left:0;right:0;bottom:0;background:white;border-top:1px solid var(--line);display:flex;justify-content:center;gap:6px;padding:9px 10px calc(9px + env(safe-area-inset-bottom));z-index:12}
-.nav button{border:0;background:#f2eff5;border-radius:12px;padding:10px 12px;font-weight:700}
-.nav button.active{background:var(--accent);color:white}
-.callout{background:#fff9e8;border:1px solid #ead7a3;border-radius:14px;padding:12px}
-.water-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:10px}
-.water-btn{border:1px solid var(--line);background:white;border-radius:14px;padding:14px 8px;font-size:28px;min-height:64px}
-.water-btn.filled{background:var(--accent-soft);border-color:var(--accent)}
-.water-summary{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-top:10px;flex-wrap:wrap}
-@media(min-width:700px){.grid{grid-template-columns:repeat(4,minmax(0,1fr))}.badge-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.progress{height:10px;background:#ece7ef;border-radius:999px;overflow:hidden} .progress>div{height:100%;background:var(--accent);width:0}
+.check{display:flex;gap:11px;align-items:flex-start;padding:11px 0;border-bottom:1px solid var(--line)} .check:last-child{border-bottom:0}
+.check input[type=checkbox]{width:23px;height:23px;min-width:23px;accent-color:var(--accent)}
+input,textarea{width:100%;border:1px solid var(--line);border-radius:13px;padding:12px;font:inherit;background:#fff} textarea{min-height:88px}
+button{font:inherit} .primary{border:0;border-radius:13px;padding:12px 15px;background:var(--accent);color:white;font-weight:750} .ghost{border:1px solid var(--line);border-radius:13px;padding:11px 13px;background:white;font-weight:700}
+.top3{display:grid;grid-template-columns:26px 1fr;gap:10px;align-items:center;margin:9px 0} .top3 input[type=checkbox]{width:22px;height:22px}
+.flow{display:grid;grid-template-columns:70px 1fr;gap:12px;padding:11px 0;border-bottom:1px solid var(--line)} .flow:last-child{border-bottom:0}
+.flow strong{font-size:13px;color:var(--accent)}
+.stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px} .stat{background:var(--soft);border-radius:15px;padding:13px} .stat b{font-size:24px;display:block}
+.water{display:grid;grid-template-columns:repeat(4,1fr);gap:9px} .water button{font-size:26px;border:1px solid var(--line);border-radius:15px;background:white;padding:12px 3px} .water button.on{background:var(--soft);border-color:var(--accent)}
+.tabs{display:flex;gap:8px;overflow:auto;margin:6px 0 12px} .tabs button{white-space:nowrap;border:1px solid var(--line);border-radius:999px;background:white;padding:9px 12px;font-weight:700} .tabs button.active{background:var(--accent);color:white}
+.panel{display:none} .panel.active{display:block}
+.meal{padding:11px 0;border-bottom:1px solid var(--line)} .meal:last-child{border-bottom:0}
+.timer{text-align:center;font-size:48px;font-weight:800;margin:16px 0}
+.nav{position:fixed;bottom:0;left:0;right:0;display:grid;grid-template-columns:repeat(5,1fr);gap:5px;background:white;border-top:1px solid var(--line);padding:8px 8px calc(8px + env(safe-area-inset-bottom));z-index:20}
+.nav button{border:0;background:transparent;border-radius:12px;padding:8px 3px;font-size:12px;font-weight:750;color:#6d6670} .nav button.active{background:var(--soft);color:var(--accent)}
+.mission-row{margin:11px 0} .vault-number{font-size:30px;font-weight:850}
+@media(min-width:680px){.stat-grid{grid-template-columns:repeat(4,1fr)}}
 </style>
 </head>
 <body>
-<header>
-  <h1>🌅 The 4:20 Club</h1>
-  <p>We don’t chase perfection. We collect sunrises.</p>
-</header>
-
+<header class="app-header"><h1>🌅 The 4:20 Club</h1><p>Collect sunrises. Build freedom.</p></header>
 <main>
-  <div class="tabs" id="tabs">
-    <button data-tab="today" class="active">Today</button>
-    <button data-tab="workout">Workout</button>
-    <button data-tab="meals">Meals</button>
-    <button data-tab="challenge">Challenge</button>
-    <button data-tab="grocery">Groceries</button>
-    <button data-tab="progress">Progress</button>
-    <button data-tab="badges">Badges</button>
-    <button data-tab="journal">Journal</button>
-    <button data-tab="week">Week</button>
-    <button data-tab="beauty">Beauty Vault</button>
+<section id="home" class="view active">
+  <div class="hero-card">
+    <div class="eyebrow" id="dateLine"></div>
+    <h2 id="greeting"></h2>
+    <p id="coach"></p>
+    <div class="progress"><div id="dayProgress"></div></div>
+    <p class="small" id="dayProgressText"></p>
   </div>
+  <div class="card"><div class="eyebrow">Today’s win condition</div><div id="winList"></div></div>
+  <div class="card"><div class="eyebrow">Today’s Top 3</div><div id="top3"></div><button class="primary" id="saveTop3">Save Top 3</button></div>
+  <div class="card"><div class="eyebrow">Morning thoughts</div><textarea id="amNote" placeholder="What is on your mind this morning?"></textarea><button class="primary" id="saveAm" style="margin-top:10px">Save note</button></div>
+  <div class="card"><div class="eyebrow">Morning flow</div><p class="small" id="sunriseText"></p><div id="flowList"></div></div>
+  <div class="card"><div class="eyebrow">Hydration</div><div class="water" id="water"></div><p class="small" id="waterText"></p></div>
+  <div class="card"><div class="eyebrow">Tonight</div><h2 id="bowlTonight"></h2><p class="small">Dessert is part of the plan.</p></div>
+  <div class="card"><div class="eyebrow">Evening recap</div><label>Biggest win<textarea id="pmWin"></textarea></label><label>Gratitude<textarea id="pmGratitude"></textarea></label><label>Brain dump<textarea id="pmDump"></textarea></label><button class="primary" id="savePm">Save recap</button></div>
+</section>
 
-  <section id="today" class="section active">
-    <div class="card hero">
-      <span class="badge" id="dayBadge"></span>
-      <h2 id="greeting" style="margin-top:10px"></h2>
-      <p id="coachMessage"></p>
-      <div class="progress"><div id="dailyProgress"></div></div>
-      <p class="small" id="dailyProgressText"></p>
-    </div>
-    <div class="card">
-      <h2>Today's Top 3</h2>
-      <p class="small">Your three non-negotiables for today. Everything else is a bonus.</p>
-      <div id="mustDoList"></div>
-      <button class="primary" id="saveTop3" style="margin-top:12px">Save Today's Top 3</button>
-    </div>
-    <div class="grid" id="todayMetrics"></div>
-    <div class="card">
-      <h2>Morning thoughts</h2>
-      <textarea id="morningThoughts" class="note" placeholder="What is on your mind this morning?"></textarea>
-      <button class="primary" id="saveMorningThoughts" style="margin-top:10px">Save morning note</button>
-    </div>
-    <div class="card">
-      <h2>Water tracker</h2>
-      <p class="small">Each bottle is 30 oz. Three bottles = 90 oz and counts as sufficient. Four bottles = 120 oz and earns a hydration bonus.</p>
-      <div class="water-grid" id="waterTracker"></div>
-      <div class="water-summary">
-        <strong id="waterStatus">0 oz</strong>
-        <span class="small" id="waterMessage">Start with bottle one.</span>
-      </div>
-    </div>
-    <div class="card">
-      <h2>Exact schedule</h2>
-      <p class="small" id="sunriseNote"></p>
-      <div id="scheduleList"></div>
-    </div>
-    <div class="card">
-      <h2>Daily scorecard</h2>
-      <div id="habitList"></div>
-    </div>
-  </section>
+<section id="body" class="view">
+  <div class="tabs"><button class="active" data-panel="train">Train</button><button data-panel="progress">Progress</button></div>
+  <div id="train" class="panel active">
+    <div class="hero-card"><div class="eyebrow">Today’s workout</div><h2 id="workoutTitle"></h2><div id="exerciseList"></div></div>
+    <div class="card"><div class="eyebrow">Timer</div><div class="timer" id="timer">40:00</div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="primary" id="startTimer">Start</button><button class="ghost" id="pauseTimer">Pause</button><button class="ghost" data-min="20">20</button><button class="ghost" data-min="40">40</button><button class="ghost" data-min="45">45</button></div></div>
+  </div>
+  <div id="progress" class="panel">
+    <div class="stat-grid"><div class="stat"><span class="small">Sunrises</span><b id="sunrises">0</b></div><div class="stat"><span class="small">Workouts</span><b id="workouts">0</b></div><div class="stat"><span class="small">Dog walks</span><b id="walks">0</b></div><div class="stat"><span class="small">90 oz days</span><b id="waterDays">0</b></div></div>
+    <div class="card"><div class="eyebrow">Check-in</div><label>Weight<input id="weight" type="number" step=".1"></label><label>Waist<input id="waist" type="number" step=".1"></label><label>Goblet squat<input id="squat" type="number"></label><label>Push-ups<input id="pushups" type="number"></label><button class="primary" id="saveCheckin">Save check-in</button></div>
+  </div>
+</section>
 
-  <section id="workout" class="section">
-    <div class="card">
-      <div style="display:flex;justify-content:space-between;gap:10px;align-items:center">
-        <div><span class="badge" id="workoutName"></span><h2 style="margin-top:8px">Today’s training</h2></div>
-        <button class="secondary" id="completeWorkout">Mark complete</button>
-      </div>
-      <div id="exerciseList"></div>
-    </div>
-    <div class="card">
-      <h2>Workout timer</h2>
-      <div class="timer" id="timerDisplay">40:00</div>
-      <div class="timer-controls">
-        <button class="primary" id="timerStart">Start</button>
-        <button class="secondary" id="timerPause">Pause</button>
-        <button class="secondary" id="timerReset">Reset</button>
-        <button class="secondary" data-minutes="10">10 min</button>
-        <button class="secondary" data-minutes="20">20 min</button>
-        <button class="secondary" data-minutes="35">35 min</button>
-        <button class="secondary" data-minutes="40">40 min</button>
-        <button class="secondary" data-minutes="45">45 min</button>
-      </div>
-    </div>
-  </section>
+<section id="fuel" class="view">
+  <div class="tabs"><button class="active" data-fuel="meals">Meals</button><button data-fuel="bowls">Bowl Lab</button><button data-fuel="groceries">Groceries</button></div>
+  <div id="meals" class="panel active"><div class="hero-card"><div class="eyebrow">Today’s food</div><h2>3 meals + 2 snacks + Power Bowl</h2><div id="mealList"></div></div></div>
+  <div id="bowls" class="panel"><div class="card"><div class="eyebrow">Yogurt Bowl Lab</div><div id="bowlList"></div></div></div>
+  <div id="groceries" class="panel"><div class="card"><div class="eyebrow">This week</div><div id="groceryList"></div></div></div>
+</section>
 
-  <section id="meals" class="section">
-    <div class="card">
-      <h2>Three meals + two snacks + dessert</h2>
-      <p class="small">Protein first. Build fiber through fruit, vegetables, beans, whole grains, chia, flax, or a small amount of psyllium if needed.</p>
-      <div id="mealList"></div>
-    </div>
-    <div class="card">
-      <h2 id="bowlName"></h2>
-      <div id="bowlDetails"></div>
-      <div class="callout" style="margin-top:12px">Dessert is part of the plan.</div>
-    </div>
-  </section>
+<section id="vault" class="view">
+  <div class="hero-card"><div class="eyebrow">Beauty Vault</div><h2>Shop your collection. Protect your freedom.</h2></div>
+  <div class="stat-grid" style="margin-top:14px"><div class="stat"><span class="small">Streak</span><b id="vaultStreak">0</b></div><div class="stat"><span class="small">No-buy days</span><b id="vaultDays">0</b></div><div class="stat"><span class="small">Freedom Fund</span><b id="vaultSaved">$0</b></div><div class="stat"><span class="small">Wishlist</span><b id="vaultWish">0</b></div></div>
+  <div class="card"><label class="check"><input id="noBuy" type="checkbox"><span>No unnecessary beauty purchase today</span></label></div>
+  <div class="card"><div class="eyebrow">Skipped purchase</div><input id="skipItem" placeholder="Item"><input id="skipAmount" type="number" step=".01" placeholder="Amount" style="margin-top:8px"><button class="primary" id="addSkip" style="margin-top:8px">Add to Freedom Fund</button><div id="skipList"></div></div>
+  <div class="card"><div class="eyebrow">30-day wishlist</div><input id="wishItem" placeholder="Item"><input id="wishPrice" type="number" step=".01" placeholder="Price" style="margin-top:8px"><textarea id="wishWhy" placeholder="Why do I want it?" style="margin-top:8px"></textarea><button class="primary" id="addWish">Lock in Vault</button><div id="wishList"></div></div>
+  <div class="card"><div class="eyebrow">Shop My Stash</div><p id="stashMission">Tap for today’s mission.</p><button class="primary" id="stashBtn">Give me a mission</button></div>
+</section>
 
-  <section id="challenge" class="section">
-    <div class="card">
-      <span class="badge" id="challengeWeek"></span>
-      <h2 id="challengeName" style="margin-top:10px"></h2>
-      <p id="challengeUnit"></p>
-      <div class="progress"><div id="challengeProgress"></div></div>
-      <p class="small" id="challengeProgressText"></p>
-      <label class="small" for="challengeAdd">Add progress</label>
-      <div style="display:flex;gap:8px;margin-top:6px">
-        <input id="challengeAdd" type="number" min="0" placeholder="e.g. 50">
-        <button class="primary" id="addChallenge">Add</button>
-      </div>
-    </div>
-  </section>
-
-  <section id="grocery" class="section">
-    <div class="card">
-      <h2>This week’s grocery list</h2>
-      <p class="small">The list refreshes by challenge week and supports the meals and yogurt bowls.</p>
-      <div id="groceryList"></div>
-    </div>
-  </section>
-
-  <section id="progress" class="section">
-    <div class="grid">
-      <div class="metric"><span class="small">Sunrises</span><strong id="sunriseCount">0</strong></div>
-      <div class="metric"><span class="small">Dog walks</span><strong id="dogWalkCount">0</strong></div>
-      <div class="metric"><span class="small">Workouts</span><strong id="workoutCount">0</strong></div>
-      <div class="metric"><span class="small">Protein days</span><strong id="proteinCount">0</strong></div>
-      <div class="metric"><span class="small">90+ oz days</span><strong id="waterCount">0</strong></div>
-    </div>
-    <div class="card">
-      <h2>Add a check-in</h2>
-      <div class="grid">
-        <label>Weight<input id="weightInput" type="number" step="0.1" placeholder="140"></label>
-        <label>Waist<input id="waistInput" type="number" step="0.1" placeholder="inches"></label>
-        <label>Goblet squat<input id="squatInput" type="number" step="1" placeholder="weight"></label>
-        <label>Push-ups<input id="pushupInput" type="number" step="1" placeholder="max reps"></label>
-      </div>
-      <button class="primary" id="saveCheckin" style="margin-top:12px">Save check-in</button>
-    </div>
-    <div class="card">
-      <h2>Weight trend</h2>
-      <div class="chart-wrap" id="weightChart"></div>
-    </div>
-    <div class="card">
-      <h2>Waist trend</h2>
-      <div class="chart-wrap" id="waistChart"></div>
-    </div>
-    <div class="card">
-      <h2>Strength trend</h2>
-      <div class="chart-wrap" id="strengthChart"></div>
-    </div>
-  </section>
-
-  <section id="badges" class="section">
-    <div class="card">
-      <h2>Sunrise badge collection</h2>
-      <div class="badge-grid" id="badgeGrid"></div>
-    </div>
-  </section>
-
-  <section id="beauty" class="section">
-    <div class="card hero">
-      <span class="badge">💄 Beauty Vault</span>
-      <h2 style="margin-top:10px">Shop your collection. Protect your freedom.</h2>
-      <p class="small">A calm no-buy challenge for makeup and unnecessary beauty purchases.</p>
-    </div>
-    <div class="grid">
-      <div class="metric"><span class="small">Current streak</span><strong id="beautyStreak">0</strong><span class="small">days</span></div>
-      <div class="metric"><span class="small">No-buy days</span><strong id="beautyDays">0</strong></div>
-      <div class="metric"><span class="small">Freedom Fund</span><strong id="beautySaved">$0</strong></div>
-      <div class="metric"><span class="small">Wishlist items</span><strong id="wishlistCount">0</strong></div>
-    </div>
-    <div class="card">
-      <h2>Today’s no-buy check-in</h2>
-      <label class="check-row">
-        <input type="checkbox" id="beautyNoBuyToday">
-        <span><strong>I did not buy makeup or unnecessary beauty products today.</strong></span>
-      </label>
-      <p class="small">True replacements and essentials can be handled intentionally without breaking the spirit of the challenge.</p>
-    </div>
-    <div class="card">
-      <h2>Skipped purchase</h2>
-      <p class="small">Log something you considered buying but left behind.</p>
-      <label>Item<input id="skippedItem" type="text" placeholder="e.g. New eyeshadow palette"></label>
-      <label style="margin-top:10px;display:block">Amount<input id="skippedAmount" type="number" min="0" step="0.01" placeholder="69"></label>
-      <button class="primary" id="addSkipped" style="margin-top:12px">Add to Freedom Fund</button>
-      <div id="skippedList" style="margin-top:12px"></div>
-    </div>
-    <div class="card">
-      <h2>30-day wishlist vault</h2>
-      <p class="small">Pause the purchase. Add it here instead.</p>
-      <label>Item<input id="wishItem" type="text" placeholder="What are you tempted to buy?"></label>
-      <label style="margin-top:10px;display:block">Price<input id="wishPrice" type="number" min="0" step="0.01" placeholder="48"></label>
-      <label style="margin-top:10px;display:block">Why do I want it?<textarea id="wishReason" placeholder="New release, limited edition, saw it online..."></textarea></label>
-      <button class="primary" id="addWish" style="margin-top:12px">Lock in the Vault</button>
-      <div id="wishlistList" style="margin-top:12px"></div>
-    </div>
-    <div class="card">
-      <h2>Shop My Stash</h2>
-      <p class="small" id="stashPrompt">Tap for today’s beauty mission.</p>
-      <button class="primary" id="stashButton">Give me a mission</button>
-    </div>
-  </section>
-
+<section id="week" class="view">
+  <div class="hero-card"><div class="eyebrow">Monday Missions</div><h2>Set the compass for the week.</h2></div>
+  <div class="card"><div class="mission-row"><label>💪 Body<input id="mBody"></label></div><div class="mission-row"><label>💰 Money<input id="mMoney"></label></div><div class="mission-row"><label>🏡 Home<input id="mHome"></label></div><div class="mission-row"><label>❤️ Life<input id="mLife"></label></div><div class="mission-row"><label>📚 Learn<input id="mLearn"></label></div><button class="primary" id="saveMissions">Save missions</button></div>
+  <div class="card"><div class="eyebrow">Weekly challenge</div><h2 id="challengeName"></h2><p id="challengeText"></p><div class="progress"><div id="challengeBar"></div></div><div style="display:flex;gap:8px;margin-top:10px"><input id="challengeAdd" type="number" placeholder="Add progress"><button class="primary" id="addChallenge">Add</button></div></div>
+  <div class="card"><div class="eyebrow">Sunday Club Meeting</div><label>What worked?<textarea id="rWorked"></textarea></label><label>What was difficult?<textarea id="rHard"></textarea></label><label>What annoyed me?<textarea id="rAnnoy"></textarea></label><label>What should change?<textarea id="rChange"></textarea></label><button class="primary" id="saveReview">Save review</button></div>
+</section>
 </main>
 
-<div class="nav">
-  <button data-tab="today" class="active">Home</button>
-  <button data-tab="workout">Train</button>
-  <button data-tab="meals">Eat</button>
-  <button data-tab="progress">Track</button>
-  <button data-tab="beauty">Vault</button>
-</div>
+<nav class="nav"><button class="active" data-view="home">🏠<br>Home</button><button data-view="body">💪<br>Body</button><button data-view="fuel">🥣<br>Fuel</button><button data-view="vault">💄<br>Vault</button><button data-view="week">📅<br>Week</button></nav>
 
 <script>
-const APP = {"days": [{"date": "2026-08-03", "display": "Monday, August 3", "dayNumber": 1, "workout": "Strength A", "schedule": [["4:20 AM", "Wake, water, coffee, creatine"], ["4:35\u20135:10", "Strength A"], ["5:10\u20136:10", "Morning chores"], ["6:10\u20136:50", "Get ready"], ["6:50\u20137:35", "Dog walk"], ["Daytime", "Optional work, errands, meal prep, appointments"], ["8:45 PM", "Wind-down"], ["9:15 PM", "In bed"]], "meals": {"Breakfast": "Egg scramble with spinach, tomatoes, and feta; whole-grain toast", "Snack 1": "Cottage cheese with berries", "Lunch": "Chicken grain bowl with quinoa, cucumber, tomato, greens, and hummus", "Snack 2": "Apple with string cheese", "Dinner": "Salmon, roasted potatoes, and broccoli", "Power Bowl": "Sunrise Berry Crunch"}, "challenge": "Swing Into It"}, {"date": "2026-08-04", "display": "Tuesday, August 4", "dayNumber": 2, "workout": "Mobility", "schedule": [["4:20 AM", "Wake, water, coffee, creatine"], ["4:35\u20134:50", "Mobility"], ["4:50\u20135:50", "Morning chores"], ["5:50\u20136:30", "Get ready"], ["6:30\u20137:15", "Dog walk"], ["7:30 AM\u20137:00 PM", "Work"], ["7:10 PM", "Easy dinner"], ["7:45 PM", "Power Bowl"], ["8:45 PM", "Wind-down"], ["9:15 PM", "In bed"]], "meals": {"Breakfast": "Greek yogurt, berries, chia, and a small crunchy topping", "Snack 1": "Protein shake and a banana", "Lunch": "Turkey and avocado wrap with crunchy vegetables", "Snack 2": "Edamame with sea salt", "Dinner": "Lean beef taco bowl with rice, black beans, salsa, lettuce, and avocado", "Power Bowl": "Sunrise Berry Crunch"}, "challenge": "Swing Into It"}, {"date": "2026-08-05", "display": "Wednesday, August 5", "dayNumber": 3, "workout": "Strength B", "schedule": [["4:20 AM", "Wake, water, coffee, creatine"], ["4:35\u20135:10", "Strength B"], ["5:10\u20136:10", "Morning chores"], ["6:10\u20136:50", "Get ready"], ["6:50\u20137:35", "Dog walk"], ["7:30 AM\u20137:00 PM", "Work"], ["7:10 PM", "Easy dinner"], ["7:45 PM", "Power Bowl"], ["8:45 PM", "Wind-down"], ["9:15 PM", "In bed"]], "meals": {"Breakfast": "Eggs, turkey sausage, and fruit", "Snack 1": "Greek yogurt with raspberries", "Lunch": "Leftover taco bowl", "Snack 2": "Hummus with carrots and cucumbers", "Dinner": "Chicken stir-fry with mixed vegetables and rice", "Power Bowl": "Murph Mud Pie"}, "challenge": "Swing Into It"}, {"date": "2026-08-06", "display": "Thursday, August 6", "dayNumber": 4, "workout": "Mobility", "schedule": [["4:20 AM", "Wake, water, coffee, creatine"], ["4:35\u20134:50", "Mobility"], ["4:50\u20135:50", "Morning chores"], ["5:50\u20136:30", "Get ready"], ["6:30\u20137:15", "Dog walk"], ["7:30 AM\u20137:00 PM", "Work"], ["7:10 PM", "Easy dinner"], ["7:45 PM", "Power Bowl"], ["8:45 PM", "Wind-down"], ["9:15 PM", "In bed"]], "meals": {"Breakfast": "Protein smoothie with berries, spinach, milk, and flax", "Snack 1": "Cottage cheese and peaches", "Lunch": "Tuna salad on whole-grain toast with a side salad", "Snack 2": "Pear and a small handful of almonds", "Dinner": "Lean steak, sweet potato, and green beans", "Power Bowl": "Murph Mud Pie"}, "challenge": "Swing Into It"}, {"date": "2026-08-07", "display": "Friday, August 7", "dayNumber": 5, "workout": "Strength C", "schedule": [["4:20 AM", "Wake, water, coffee, creatine"], ["4:35\u20135:10", "Strength C"], ["5:10\u20136:10", "Morning chores"], ["6:10\u20136:50", "Get ready"], ["6:50\u20137:35", "Dog walk"], ["7:30 AM\u20137:00 PM", "Work"], ["7:10 PM", "Easy dinner"], ["7:45 PM", "Power Bowl"], ["8:45 PM", "Wind-down"], ["9:15 PM", "In bed"]], "meals": {"Breakfast": "High-protein oatmeal with berries and cinnamon", "Snack 1": "Protein shake", "Lunch": "Chicken Caesar-style salad with chickpeas", "Snack 2": "String cheese and grapes", "Dinner": "Turkey burger, giant salad, and oven fries", "Power Bowl": "Annie Apple Crisp"}, "challenge": "Swing Into It"}, {"date": "2026-08-08", "display": "Saturday, August 8", "dayNumber": 6, "workout": "Conditioning", "schedule": [["4:20 AM", "Wake, water, coffee, creatine"], ["4:35\u20134:55", "Conditioning"], ["4:55\u20135:55", "Morning chores"], ["5:55\u20136:35", "Get ready"], ["6:35\u20137:20", "Dog walk"], ["8:00 AM\u20134:00 PM", "Work"], ["After work", "Walk only if desired; otherwise recover"], ["8:45 PM", "Wind-down"], ["9:15 PM", "In bed"]], "meals": {"Breakfast": "Eggs, avocado toast, and berries", "Snack 1": "Greek yogurt with chia", "Lunch": "Shrimp salad with corn, black beans, and avocado", "Snack 2": "Air-popped popcorn and a cheese stick", "Dinner": "Shrimp tacos with cabbage slaw and beans", "Power Bowl": "Blueberry Muffin"}, "challenge": "Swing Into It"}, {"date": "2026-08-09", "display": "Sunday, August 9", "dayNumber": 7, "workout": "Recovery", "schedule": [["4:20 AM", "Wake, water, coffee"], ["4:35\u20135:20", "Dog walk"], ["5:20\u20136:20", "Morning chores"], ["6:20\u20137:00", "Get ready"], ["7:00\u20137:30", "Breakfast and prep"], ["8:00 AM\u20134:00 PM", "Work"], ["4:30 PM", "Meal prep and grocery reset"], ["8:45 PM", "Wind-down"], ["9:15 PM", "In bed"]], "meals": {"Breakfast": "Protein pancakes with berries", "Snack 1": "Cottage cheese with pineapple", "Lunch": "Leftovers or a protein-forward sandwich and fruit", "Snack 2": "Roasted chickpeas", "Dinner": "Sheet-pan chicken, vegetables, and baby potatoes", "Power Bowl": "Blueberry Muffin"}, "challenge": "Swing Into It"}, {"date": "2026-08-10", "display": "Monday, August 10", "dayNumber": 8, "workout": "Strength A", "schedule": [["4:20 AM", "Wake, water, coffee, creatine"], ["4:35\u20135:10", "Strength A"], ["5:10\u20136:10", "Morning chores"], ["6:10\u20136:50", "Get ready"], ["6:50\u20137:35", "Dog walk"], ["Daytime", "Optional work, errands, meal prep, appointments"], ["8:45 PM", "Wind-down"], ["9:15 PM", "In bed"]], "meals": {"Breakfast": "Egg scramble with spinach, tomatoes, and feta; whole-grain toast", "Snack 1": "Cottage cheese with berries", "Lunch": "Chicken grain bowl with quinoa, cucumber, tomato, greens, and hummus", "Snack 2": "Apple with string cheese", "Dinner": "Salmon, roasted potatoes, and broccoli", "Power Bowl": "Sunrise Berry Crunch"}, "challenge": "Double-Under Revival"}, {"date": "2026-08-11", "display": "Tuesday, August 11", "dayNumber": 9, "workout": "Mobility", "schedule": [["4:20 AM", "Wake, water, coffee, creatine"], ["4:35\u20134:50", "Mobility"], ["4:50\u20135:50", "Morning chores"], ["5:50\u20136:30", "Get ready"], ["6:30\u20137:15", "Dog walk"], ["7:30 AM\u20137:00 PM", "Work"], ["7:10 PM", "Easy dinner"], ["7:45 PM", "Power Bowl"], ["8:45 PM", "Wind-down"], ["9:15 PM", "In bed"]], "meals": {"Breakfast": "Greek yogurt, berries, chia, and a small crunchy topping", "Snack 1": "Protein shake and a banana", "Lunch": "Turkey and avocado wrap with crunchy vegetables", "Snack 2": "Edamame with sea salt", "Dinner": "Lean beef taco bowl with rice, black beans, salsa, lettuce, and avocado", "Power Bowl": "Sunrise Berry Crunch"}, "challenge": "Double-Under Revival"}, {"date": "2026-08-12", "display": "Wednesday, August 12", "dayNumber": 10, "workout": "Strength B", "schedule": [["4:20 AM", "Wake, water, coffee, creatine"], ["4:35\u20135:10", "Strength B"], ["5:10\u20136:10", "Morning chores"], ["6:10\u20136:50", "Get ready"], ["6:50\u20137:35", "Dog walk"], ["7:30 AM\u20137:00 PM", "Work"], ["7:10 PM", "Easy dinner"], ["7:45 PM", "Power Bowl"], ["8:45 PM", "Wind-down"], ["9:15 PM", "In bed"]], "meals": {"Breakfast": "Eggs, turkey sausage, and fruit", "Snack 1": "Greek yogurt with raspberries", "Lunch": "Leftover taco bowl", "Snack 2": "Hummus with carrots and cucumbers", "Dinner": "Chicken stir-fry with mixed vegetables and rice", "Power Bowl": "Murph Mud Pie"}, "challenge": "Double-Under Revival"}, {"date": "2026-08-13", "display": "Thursday, August 13", "dayNumber": 11, "workout": "Mobility", "schedule": [["4:20 AM", "Wake, water, coffee, creatine"], ["4:35\u20134:50", "Mobility"], ["4:50\u20135:50", "Morning chores"], ["5:50\u20136:30", "Get ready"], ["6:30\u20137:15", "Dog walk"], ["7:30 AM\u20137:00 PM", "Work"], ["7:10 PM", "Easy dinner"], ["7:45 PM", "Power Bowl"], ["8:45 PM", "Wind-down"], ["9:15 PM", "In bed"]], "meals": {"Breakfast": "Protein smoothie with berries, spinach, milk, and flax", "Snack 1": "Cottage cheese and peaches", "Lunch": "Tuna salad on whole-grain toast with a side salad", "Snack 2": "Pear and a small handful of almonds", "Dinner": "Lean steak, sweet potato, and green beans", "Power Bowl": "Murph Mud Pie"}, "challenge": "Double-Under Revival"}, {"date": "2026-08-14", "display": "Friday, August 14", "dayNumber": 12, "workout": "Strength C", "schedule": [["4:20 AM", "Wake, water, coffee, creatine"], ["4:35\u20135:10", "Strength C"], ["5:10\u20136:10", "Morning chores"], ["6:10\u20136:50", "Get ready"], ["6:50\u20137:35", "Dog walk"], ["7:30 AM\u20137:00 PM", "Work"], ["7:10 PM", "Easy dinner"], ["7:45 PM", "Power Bowl"], ["8:45 PM", "Wind-down"], ["9:15 PM", "In bed"]], "meals": {"Breakfast": "High-protein oatmeal with berries and cinnamon", "Snack 1": "Protein shake", "Lunch": "Chicken Caesar-style salad with chickpeas", "Snack 2": "String cheese and grapes", "Dinner": "Turkey burger, giant salad, and oven fries", "Power Bowl": "Annie Apple Crisp"}, "challenge": "Double-Under Revival"}, {"date": "2026-08-15", "display": "Saturday, August 15", "dayNumber": 13, "workout": "Conditioning", "schedule": [["4:20 AM", "Wake, water, coffee, creatine"], ["4:35\u20134:55", "Conditioning"], ["4:55\u20135:55", "Morning chores"], ["5:55\u20136:35", "Get ready"], ["6:35\u20137:20", "Dog walk"], ["8:00 AM\u20134:00 PM", "Work"], ["After work", "Walk only if desired; otherwise recover"], ["8:45 PM", "Wind-down"], ["9:15 PM", "In bed"]], "meals": {"Breakfast": "Eggs, avocado toast, and berries", "Snack 1": "Greek yogurt with chia", "Lunch": "Shrimp salad with corn, black beans, and avocado", "Snack 2": "Air-popped popcorn and a cheese stick", "Dinner": "Shrimp tacos with cabbage slaw and beans", "Power Bowl": "Blueberry Muffin"}, "challenge": "Double-Under Revival"}, {"date": "2026-08-16", "display": "Sunday, August 16", "dayNumber": 14, "workout": "Recovery", "schedule": [["4:20 AM", "Wake, water, coffee"], ["4:35\u20135:20", "Dog walk"], ["5:20\u20136:20", "Morning chores"], ["6:20\u20137:00", "Get ready"], ["7:00\u20137:30", "Breakfast and prep"], ["8:00 AM\u20134:00 PM", "Work"], ["4:30 PM", "Meal prep and grocery reset"], ["8:45 PM", "Wind-down"], ["9:15 PM", "In bed"]], "meals": {"Breakfast": "Protein pancakes with berries", "Snack 1": "Cottage cheese with pineapple", "Lunch": "Leftovers or a protein-forward sandwich and fruit", "Snack 2": "Roasted chickpeas", "Dinner": "Sheet-pan chicken, vegetables, and baby potatoes", "Power Bowl": "Blueberry Muffin"}, "challenge": "Double-Under Revival"}, {"date": "2026-08-17", "display": "Monday, August 17", "dayNumber": 15, "workout": "Strength A", "schedule": [["4:20 AM", "Wake, water, coffee, creatine"], ["4:35\u20135:10", "Strength A"], ["5:10\u20136:10", "Morning chores"], ["6:10\u20136:50", "Get ready"], ["6:50\u20137:35", "Dog walk"], ["Daytime", "Optional work, errands, meal prep, appointments"], ["8:45 PM", "Wind-down"], ["9:15 PM", "In bed"]], "meals": {"Breakfast": "Egg scramble with spinach, tomatoes, and feta; whole-grain toast", "Snack 1": "Cottage cheese with berries", "Lunch": "Chicken grain bowl with quinoa, cucumber, tomato, greens, and hummus", "Snack 2": "Apple with string cheese", "Dinner": "Salmon, roasted potatoes, and broccoli", "Power Bowl": "Sunrise Berry Crunch"}, "challenge": "Push-Up Ladder"}, {"date": "2026-08-18", "display": "Tuesday, August 18", "dayNumber": 16, "workout": "Mobility", "schedule": [["4:20 AM", "Wake, water, coffee, creatine"], ["4:35\u20134:50", "Mobility"], ["4:50\u20135:50", "Morning chores"], ["5:50\u20136:30", "Get ready"], ["6:30\u20137:15", "Dog walk"], ["7:30 AM\u20137:00 PM", "Work"], ["7:10 PM", "Easy dinner"], ["7:45 PM", "Power Bowl"], ["8:45 PM", "Wind-down"], ["9:15 PM", "In bed"]], "meals": {"Breakfast": "Greek yogurt, berries, chia, and a small crunchy topping", "Snack 1": "Protein shake and a banana", "Lunch": "Turkey and avocado wrap with crunchy vegetables", "Snack 2": "Edamame with sea salt", "Dinner": "Lean beef taco bowl with rice, black beans, salsa, lettuce, and avocado", "Power Bowl": "Sunrise Berry Crunch"}, "challenge": "Push-Up Ladder"}, {"date": "2026-08-19", "display": "Wednesday, August 19", "dayNumber": 17, "workout": "Strength B", "schedule": [["4:20 AM", "Wake, water, coffee, creatine"], ["4:35\u20135:10", "Strength B"], ["5:10\u20136:10", "Morning chores"], ["6:10\u20136:50", "Get ready"], ["6:50\u20137:35", "Dog walk"], ["7:30 AM\u20137:00 PM", "Work"], ["7:10 PM", "Easy dinner"], ["7:45 PM", "Power Bowl"], ["8:45 PM", "Wind-down"], ["9:15 PM", "In bed"]], "meals": {"Breakfast": "Eggs, turkey sausage, and fruit", "Snack 1": "Greek yogurt with raspberries", "Lunch": "Leftover taco bowl", "Snack 2": "Hummus with carrots and cucumbers", "Dinner": "Chicken stir-fry with mixed vegetables and rice", "Power Bowl": "Murph Mud Pie"}, "challenge": "Push-Up Ladder"}, {"date": "2026-08-20", "display": "Thursday, August 20", "dayNumber": 18, "workout": "Mobility", "schedule": [["4:20 AM", "Wake, water, coffee, creatine"], ["4:35\u20134:50", "Mobility"], ["4:50\u20135:50", "Morning chores"], ["5:50\u20136:30", "Get ready"], ["6:30\u20137:15", "Dog walk"], ["7:30 AM\u20137:00 PM", "Work"], ["7:10 PM", "Easy dinner"], ["7:45 PM", "Power Bowl"], ["8:45 PM", "Wind-down"], ["9:15 PM", "In bed"]], "meals": {"Breakfast": "Protein smoothie with berries, spinach, milk, and flax", "Snack 1": "Cottage cheese and peaches", "Lunch": "Tuna salad on whole-grain toast with a side salad", "Snack 2": "Pear and a small handful of almonds", "Dinner": "Lean steak, sweet potato, and green beans", "Power Bowl": "Murph Mud Pie"}, "challenge": "Push-Up Ladder"}, {"date": "2026-08-21", "display": "Friday, August 21", "dayNumber": 19, "workout": "Strength C", "schedule": [["4:20 AM", "Wake, water, coffee, creatine"], ["4:35\u20135:10", "Strength C"], ["5:10\u20136:10", "Morning chores"], ["6:10\u20136:50", "Get ready"], ["6:50\u20137:35", "Dog walk"], ["7:30 AM\u20137:00 PM", "Work"], ["7:10 PM", "Easy dinner"], ["7:45 PM", "Power Bowl"], ["8:45 PM", "Wind-down"], ["9:15 PM", "In bed"]], "meals": {"Breakfast": "High-protein oatmeal with berries and cinnamon", "Snack 1": "Protein shake", "Lunch": "Chicken Caesar-style salad with chickpeas", "Snack 2": "String cheese and grapes", "Dinner": "Turkey burger, giant salad, and oven fries", "Power Bowl": "Annie Apple Crisp"}, "challenge": "Push-Up Ladder"}, {"date": "2026-08-22", "display": "Saturday, August 22", "dayNumber": 20, "workout": "Conditioning", "schedule": [["4:20 AM", "Wake, water, coffee, creatine"], ["4:35\u20134:55", "Conditioning"], ["4:55\u20135:55", "Morning chores"], ["5:55\u20136:35", "Get ready"], ["6:35\u20137:20", "Dog walk"], ["8:00 AM\u20134:00 PM", "Work"], ["After work", "Walk only if desired; otherwise recover"], ["8:45 PM", "Wind-down"], ["9:15 PM", "In bed"]], "meals": {"Breakfast": "Eggs, avocado toast, and berries", "Snack 1": "Greek yogurt with chia", "Lunch": "Shrimp salad with corn, black beans, and avocado", "Snack 2": "Air-popped popcorn and a cheese stick", "Dinner": "Shrimp tacos with cabbage slaw and beans", "Power Bowl": "Blueberry Muffin"}, "challenge": "Push-Up Ladder"}, {"date": "2026-08-23", "display": "Sunday, August 23", "dayNumber": 21, "workout": "Recovery", "schedule": [["4:20 AM", "Wake, water, coffee"], ["4:35\u20135:20", "Dog walk"], ["5:20\u20136:20", "Morning chores"], ["6:20\u20137:00", "Get ready"], ["7:00\u20137:30", "Breakfast and prep"], ["8:00 AM\u20134:00 PM", "Work"], ["4:30 PM", "Meal prep and grocery reset"], ["8:45 PM", "Wind-down"], ["9:15 PM", "In bed"]], "meals": {"Breakfast": "Protein pancakes with berries", "Snack 1": "Cottage cheese with pineapple", "Lunch": "Leftovers or a protein-forward sandwich and fruit", "Snack 2": "Roasted chickpeas", "Dinner": "Sheet-pan chicken, vegetables, and baby potatoes", "Power Bowl": "Blueberry Muffin"}, "challenge": "Push-Up Ladder"}, {"date": "2026-08-24", "display": "Monday, August 24", "dayNumber": 22, "workout": "Strength A", "schedule": [["4:20 AM", "Wake, water, coffee, creatine"], ["4:35\u20135:10", "Strength A"], ["5:10\u20136:10", "Morning chores"], ["6:10\u20136:50", "Get ready"], ["6:50\u20137:35", "Dog walk"], ["Daytime", "Optional work, errands, meal prep, appointments"], ["8:45 PM", "Wind-down"], ["9:15 PM", "In bed"]], "meals": {"Breakfast": "Egg scramble with spinach, tomatoes, and feta; whole-grain toast", "Snack 1": "Cottage cheese with berries", "Lunch": "Chicken grain bowl with quinoa, cucumber, tomato, greens, and hummus", "Snack 2": "Apple with string cheese", "Dinner": "Salmon, roasted potatoes, and broccoli", "Power Bowl": "Sunrise Berry Crunch"}, "challenge": "Farmer Carry PR"}, {"date": "2026-08-25", "display": "Tuesday, August 25", "dayNumber": 23, "workout": "Mobility", "schedule": [["4:20 AM", "Wake, water, coffee, creatine"], ["4:35\u20134:50", "Mobility"], ["4:50\u20135:50", "Morning chores"], ["5:50\u20136:30", "Get ready"], ["6:30\u20137:15", "Dog walk"], ["7:30 AM\u20137:00 PM", "Work"], ["7:10 PM", "Easy dinner"], ["7:45 PM", "Power Bowl"], ["8:45 PM", "Wind-down"], ["9:15 PM", "In bed"]], "meals": {"Breakfast": "Greek yogurt, berries, chia, and a small crunchy topping", "Snack 1": "Protein shake and a banana", "Lunch": "Turkey and avocado wrap with crunchy vegetables", "Snack 2": "Edamame with sea salt", "Dinner": "Lean beef taco bowl with rice, black beans, salsa, lettuce, and avocado", "Power Bowl": "Sunrise Berry Crunch"}, "challenge": "Farmer Carry PR"}, {"date": "2026-08-26", "display": "Wednesday, August 26", "dayNumber": 24, "workout": "Strength B", "schedule": [["4:20 AM", "Wake, water, coffee, creatine"], ["4:35\u20135:10", "Strength B"], ["5:10\u20136:10", "Morning chores"], ["6:10\u20136:50", "Get ready"], ["6:50\u20137:35", "Dog walk"], ["7:30 AM\u20137:00 PM", "Work"], ["7:10 PM", "Easy dinner"], ["7:45 PM", "Power Bowl"], ["8:45 PM", "Wind-down"], ["9:15 PM", "In bed"]], "meals": {"Breakfast": "Eggs, turkey sausage, and fruit", "Snack 1": "Greek yogurt with raspberries", "Lunch": "Leftover taco bowl", "Snack 2": "Hummus with carrots and cucumbers", "Dinner": "Chicken stir-fry with mixed vegetables and rice", "Power Bowl": "Murph Mud Pie"}, "challenge": "Farmer Carry PR"}, {"date": "2026-08-27", "display": "Thursday, August 27", "dayNumber": 25, "workout": "Mobility", "schedule": [["4:20 AM", "Wake, water, coffee, creatine"], ["4:35\u20134:50", "Mobility"], ["4:50\u20135:50", "Morning chores"], ["5:50\u20136:30", "Get ready"], ["6:30\u20137:15", "Dog walk"], ["7:30 AM\u20137:00 PM", "Work"], ["7:10 PM", "Easy dinner"], ["7:45 PM", "Power Bowl"], ["8:45 PM", "Wind-down"], ["9:15 PM", "In bed"]], "meals": {"Breakfast": "Protein smoothie with berries, spinach, milk, and flax", "Snack 1": "Cottage cheese and peaches", "Lunch": "Tuna salad on whole-grain toast with a side salad", "Snack 2": "Pear and a small handful of almonds", "Dinner": "Lean steak, sweet potato, and green beans", "Power Bowl": "Murph Mud Pie"}, "challenge": "Farmer Carry PR"}, {"date": "2026-08-28", "display": "Friday, August 28", "dayNumber": 26, "workout": "Strength C", "schedule": [["4:20 AM", "Wake, water, coffee, creatine"], ["4:35\u20135:10", "Strength C"], ["5:10\u20136:10", "Morning chores"], ["6:10\u20136:50", "Get ready"], ["6:50\u20137:35", "Dog walk"], ["7:30 AM\u20137:00 PM", "Work"], ["7:10 PM", "Easy dinner"], ["7:45 PM", "Power Bowl"], ["8:45 PM", "Wind-down"], ["9:15 PM", "In bed"]], "meals": {"Breakfast": "High-protein oatmeal with berries and cinnamon", "Snack 1": "Protein shake", "Lunch": "Chicken Caesar-style salad with chickpeas", "Snack 2": "String cheese and grapes", "Dinner": "Turkey burger, giant salad, and oven fries", "Power Bowl": "Annie Apple Crisp"}, "challenge": "Farmer Carry PR"}, {"date": "2026-08-29", "display": "Saturday, August 29", "dayNumber": 27, "workout": "Conditioning", "schedule": [["4:20 AM", "Wake, water, coffee, creatine"], ["4:35\u20134:55", "Conditioning"], ["4:55\u20135:55", "Morning chores"], ["5:55\u20136:35", "Get ready"], ["6:35\u20137:20", "Dog walk"], ["8:00 AM\u20134:00 PM", "Work"], ["After work", "Walk only if desired; otherwise recover"], ["8:45 PM", "Wind-down"], ["9:15 PM", "In bed"]], "meals": {"Breakfast": "Eggs, avocado toast, and berries", "Snack 1": "Greek yogurt with chia", "Lunch": "Shrimp salad with corn, black beans, and avocado", "Snack 2": "Air-popped popcorn and a cheese stick", "Dinner": "Shrimp tacos with cabbage slaw and beans", "Power Bowl": "Blueberry Muffin"}, "challenge": "Farmer Carry PR"}, {"date": "2026-08-30", "display": "Sunday, August 30", "dayNumber": 28, "workout": "Recovery", "schedule": [["4:20 AM", "Wake, water, coffee"], ["4:35\u20135:20", "Dog walk"], ["5:20\u20136:20", "Morning chores"], ["6:20\u20137:00", "Get ready"], ["7:00\u20137:30", "Breakfast and prep"], ["8:00 AM\u20134:00 PM", "Work"], ["4:30 PM", "Meal prep and grocery reset"], ["8:45 PM", "Wind-down"], ["9:15 PM", "In bed"]], "meals": {"Breakfast": "Protein pancakes with berries", "Snack 1": "Cottage cheese with pineapple", "Lunch": "Leftovers or a protein-forward sandwich and fruit", "Snack 2": "Roasted chickpeas", "Dinner": "Sheet-pan chicken, vegetables, and baby potatoes", "Power Bowl": "Blueberry Muffin"}, "challenge": "Farmer Carry PR"}, {"date": "2026-08-31", "display": "Monday, August 31", "dayNumber": 29, "workout": "Strength A", "schedule": [["4:20 AM", "Wake, water, coffee, creatine"], ["4:35\u20135:10", "Strength A"], ["5:10\u20136:10", "Morning chores"], ["6:10\u20136:50", "Get ready"], ["6:50\u20137:35", "Dog walk"], ["Daytime", "Optional work, errands, meal prep, appointments"], ["8:45 PM", "Wind-down"], ["9:15 PM", "In bed"]], "meals": {"Breakfast": "Egg scramble with spinach, tomatoes, and feta; whole-grain toast", "Snack 1": "Cottage cheese with berries", "Lunch": "Chicken grain bowl with quinoa, cucumber, tomato, greens, and hummus", "Snack 2": "Apple with string cheese", "Dinner": "Salmon, roasted potatoes, and broccoli", "Power Bowl": "Sunrise Berry Crunch"}, "challenge": "Farmer Carry PR"}], "workouts": {"Strength A": [{"name": "Goblet squat", "sets": "3 \u00d7 10", "demo": "Hold one kettlebell at your chest. Sit between your hips, keep your chest tall, then drive through your whole foot to stand."}, {"name": "One-arm dumbbell row", "sets": "3 \u00d7 10/side", "demo": "Brace one hand on a bench or sturdy surface. Pull the dumbbell toward your hip without twisting."}, {"name": "Push-up", "sets": "3 \u00d7 8\u201312", "demo": "Keep your body in one line. Lower under control. Elevate your hands if needed."}, {"name": "Romanian deadlift", "sets": "3 \u00d7 10", "demo": "Soften your knees, push your hips back, keep weights close to your legs, then squeeze your glutes to stand."}, {"name": "Farmer carry", "sets": "3 \u00d7 45 sec", "demo": "Stand tall with heavy weights at your sides. Walk slowly without leaning or shrugging."}], "Strength B": [{"name": "Kettlebell deadlift", "sets": "3 \u00d7 12", "demo": "Place the bell between your feet. Hinge back, brace, and stand by driving the floor away."}, {"name": "Standing dumbbell press", "sets": "3 \u00d7 10", "demo": "Brace your ribs down and press overhead without leaning back."}, {"name": "Bulgarian split squat", "sets": "3 \u00d7 8/leg", "demo": "Rear foot elevated. Drop straight down, keep the front knee tracking over the toes, and push through the front foot."}, {"name": "Renegade row", "sets": "3 \u00d7 8/side", "demo": "From a wide plank, row one weight while keeping your hips as still as possible. Use knees-down if needed."}, {"name": "Side plank", "sets": "3 \u00d7 30 sec/side", "demo": "Stack shoulders and hips. Press the floor away and keep your body long."}], "Strength C": [{"name": "Kettlebell swing", "sets": "4 rounds \u00d7 20", "demo": "Hinge, hike the bell back, then snap your hips. The bell floats; your arms do not lift it."}, {"name": "Dumbbell thruster", "sets": "4 rounds \u00d7 10", "demo": "Squat with dumbbells at the shoulders, then stand powerfully and press overhead."}, {"name": "Walking lunge", "sets": "4 rounds \u00d7 20 total", "demo": "Take a controlled step, lower both knees, and drive through the front foot."}, {"name": "Medicine-ball slam", "sets": "4 rounds \u00d7 15", "demo": "Reach tall, brace, and slam the ball hard between your feet. Squat to retrieve it."}, {"name": "Mountain climber", "sets": "4 rounds \u00d7 30 total", "demo": "From plank, alternate knees toward your chest while keeping your shoulders over your hands."}], "Conditioning": [{"name": "EMOM minute 1", "sets": "15 kettlebell swings", "demo": "Use a weight you can swing crisply for all five rounds."}, {"name": "EMOM minute 2", "sets": "8\u201310 burpees or step-backs", "demo": "Choose full burpees or step one foot back at a time. Keep the pace sustainable."}, {"name": "EMOM minute 3", "sets": "12 goblet squats", "demo": "Move smoothly and finish with time to breathe."}, {"name": "EMOM minute 4", "sets": "Rest", "demo": "Breathe, reset, and prepare for the next round."}], "Mobility": [{"name": "Easy mobility flow", "sets": "10 minutes", "demo": "Cat-cow, thoracic rotations, hip flexor stretch, hamstring stretch, calf stretch, and shoulder circles."}], "Recovery": [{"name": "Recovery walk", "sets": "10,000+ total steps", "demo": "Easy pace. The goal is circulation and recovery, not intensity."}, {"name": "Mobility", "sets": "10\u201315 minutes", "demo": "Choose the areas that feel stiff and move gently."}]}, "bowls": {"Sunrise Berry Crunch": {"ingredients": ["1 cup plain Greek yogurt", "\u00bd\u20131 scoop vanilla protein powder", "\u00bd cup strawberries", "\u00bc cup blueberries", "1 Tbsp chia seeds", "2 Tbsp crunchy high-fiber cereal"], "protein": "~35\u201345 g", "fiber": "~8\u201310 g"}, "Murph Mud Pie": {"ingredients": ["1 cup plain Greek yogurt", "\u00bd\u20131 scoop chocolate protein powder", "1 Tbsp PB2", "\u00bd cup raspberries", "2 Tbsp chocolate protein granola", "1 tsp mini chocolate chips"], "protein": "~35\u201345 g", "fiber": "~8\u201311 g"}, "Annie Apple Crisp": {"ingredients": ["1 cup plain Greek yogurt", "\u00bd\u20131 scoop vanilla protein powder", "\u00bd diced Honeycrisp apple", "1 Tbsp ground flax", "Cinnamon", "2 Tbsp granola"], "protein": "~35\u201345 g", "fiber": "~6\u20139 g"}, "Blueberry Muffin": {"ingredients": ["1 cup plain Greek yogurt", "\u00bd\u20131 scoop vanilla protein powder", "\u00bd cup blueberries", "1 tsp lemon zest", "1 Tbsp chia seeds", "2 Tbsp granola or sliced almonds"], "protein": "~35\u201345 g", "fiber": "~7\u201310 g"}}, "challenges": [{"week": "Week 1", "name": "Swing Into It", "goal": 500, "unit": "kettlebell swings", "start": "2026-08-03", "end": "2026-08-09"}, {"week": "Week 2", "name": "Double-Under Revival", "goal": 100, "unit": "double-unders or practice reps", "start": "2026-08-10", "end": "2026-08-16"}, {"week": "Week 3", "name": "Push-Up Ladder", "goal": 100, "unit": "quality push-ups", "start": "2026-08-17", "end": "2026-08-23"}, {"week": "Week 4", "name": "Farmer Carry PR", "goal": 300, "unit": "total carry seconds", "start": "2026-08-24", "end": "2026-08-31"}]};
-const STORAGE = "club420_v3";
-let state = JSON.parse(localStorage.getItem(STORAGE) || '{}');
-state.habits = state.habits || {};
-state.challenge = state.challenge || {};
-state.checkins = state.checkins || [];
-state.grocery = state.grocery || {};
-state.journal = state.journal || {};
-state.missions = state.missions || {};
-state.reviews = state.reviews || {};
-state.beauty = state.beauty || {days:{}, skipped:[], wishlist:[]};
-
-const coachMessages = [
-  "Start calmly. You do not have to earn exhaustion for the workout to count.",
-  "Today’s win is showing up before the rest of the day can make demands.",
-  "Protein first, vegetables often, and save room for your Power Bowl.",
-  "Your former athlete is still in there. We are rebuilding her patiently.",
-  "Do the version you can recover from—not the version that wrecks tomorrow.",
-  "One sunrise is small. A collection of them changes everything.",
-  "Consistency is the challenge. The workout is just the tool."
-];
-
-function save() { localStorage.setItem(STORAGE, JSON.stringify(state)); }
-function isoToday() { return new Date().toLocaleDateString("en-CA"); }
-function currentDay() {
-  return APP.days.find(d => d.date === isoToday()) || APP.days[0];
-}
-function currentChallenge(day) {
-  return APP.challenges.find(c => day.date >= c.start && day.date <= c.end) || APP.challenges[0];
-}
-function habitKey(date,key) { return `${date}_${key}`; }
-function getHabit(date,key) { return !!state.habits[habitKey(date,key)]; }
-function setHabit(date,key,val) { state.habits[habitKey(date,key)] = val; save(); renderAll(); }
-
-const habits = [
-  ["wake","4:20 wake-up"],
-  ["workout","Workout or scheduled mobility"],
-  ["dog","Dog walk"],
-  ["protein","Protein goal"],
-  ["fiber","Fiber-rich choices"],
-  ["water","Water goal (3+ bottles)"],
-  ["produce","Fruit or vegetables at least 4 times"],
-  ["bowl","Power Bowl dessert"]
-];
-
-function showTab(name) {
-  document.querySelectorAll(".section").forEach(s => s.classList.toggle("active", s.id === name));
-  document.querySelectorAll("[data-tab]").forEach(b => b.classList.toggle("active", b.dataset.tab === name));
-  window.scrollTo({top:0,behavior:"smooth"});
-}
-document.querySelectorAll("[data-tab]").forEach(b => b.addEventListener("click", () => showTab(b.dataset.tab)));
-
-function getMustDos(day) {
-  const strengthDays = ["Strength A","Strength B","Strength C","Conditioning"];
-  if (strengthDays.includes(day.workout)) {
-    return [
-      ["workout", `Complete ${day.workout}`],
-      ["dog", "Walk the dog"],
-      ["protein", "Hit the protein goal"]
-    ];
-  }
-  if (day.workout === "Mobility") {
-    return [
-      ["dog", "Walk the dog"],
-      ["protein", "Hit the protein goal"],
-      ["bowl", "Have the Power Bowl"]
-    ];
-  }
-  return [
-    ["dog", "Walk the dog"],
-    ["protein", "Hit the protein goal"],
-    ["prep", "Complete the weekly food reset"]
-  ];
-}
-
-
-function pad2(n){ return String(n).padStart(2,"0"); }
-function minutesToText(total){
-  total = ((Math.round(total) % 1440) + 1440) % 1440;
-  const h24 = Math.floor(total/60), m = total%60;
-  const suffix = h24 >= 12 ? "PM" : "AM";
-  const h = h24 % 12 || 12;
-  return `${h}:${pad2(m)} ${suffix}`;
-}
-function sunriseMinutes(dateString){
-  // NOAA-style approximation for Huntington Beach, CA.
-  const lat = 33.6595, lon = -117.9988;
-  const date = new Date(dateString + "T12:00:00");
-  const start = new Date(date.getFullYear(),0,0);
-  const N = Math.floor((date-start)/86400000);
-  const lngHour = lon / 15;
-  const t = N + ((6 - lngHour) / 24);
-  const M = (0.9856 * t) - 3.289;
-  const deg = Math.PI/180;
-  let L = M + 1.916*Math.sin(M*deg) + 0.020*Math.sin(2*M*deg) + 282.634;
-  L = (L+360)%360;
-  let RA = Math.atan(0.91764*Math.tan(L*deg))/deg;
-  RA = (RA+360)%360;
-  const Lquadrant = Math.floor(L/90)*90;
-  const RAquadrant = Math.floor(RA/90)*90;
-  RA = (RA + Lquadrant - RAquadrant)/15;
-  const sinDec = 0.39782*Math.sin(L*deg);
-  const cosDec = Math.cos(Math.asin(sinDec));
-  const cosH = (Math.cos(90.833*deg) - sinDec*Math.sin(lat*deg)) / (cosDec*Math.cos(lat*deg));
-  let H = (360 - Math.acos(Math.max(-1,Math.min(1,cosH)))/deg)/15;
-  const T = H + RA - 0.06571*t - 6.622;
-  let UT = (T - lngHour + 24)%24;
-  // PDT until first Sunday in November for this 2026 program.
-  const local = UT - 7;
-  return ((local+24)%24)*60;
-}
-function adaptiveSchedule(day){
-  const dateObj = new Date(day.date+"T12:00:00");
-  const dow = dateObj.getDay(); // 0 Sun, 1 Mon, 2 Tue...
-  const sunrise = sunriseMinutes(day.date);
-  const safeLight = sunrise - 26;
-
-  let wake, workoutStart, workoutMinutes, walkMinutes, choresMinutes, readyMinutes, workStart, bufferMinutes;
-
-  if(dow === 1){
-    // Monday: later start, never before 9:00 AM.
-    wake = 300;              // 5:00
-    workoutStart = 310;      // 5:10
-    workoutMinutes = 45;
-    walkMinutes = 45;
-    choresMinutes = 40;
-    readyMinutes = 40;
-    workStart = 540;         // 9:00
-    bufferMinutes = 30;
-  } else if(dow >= 2 && dow <= 5){
-    // Tuesday-Friday: protect a calm, on-time 7:30 AM start.
-    wake = 260;              // 4:20
-    workoutStart = 270;      // 4:30
-    workoutMinutes = 40;
-    walkMinutes = 40;
-    choresMinutes = 30;
-    readyMinutes = 40;
-    workStart = 450;         // 7:30
-    bufferMinutes = 30;
-  } else {
-    // Saturday-Sunday: 8:00 AM work start.
-    wake = 290;              // 4:50
-    workoutStart = 300;      // 5:00
-    workoutMinutes = 40;
-    walkMinutes = 40;
-    choresMinutes = 30;
-    readyMinutes = 40;
-    workStart = 480;         // 8:00
-    bufferMinutes = 30;
-  }
-
-  const workoutEnd = workoutStart + workoutMinutes;
-  const readyEnd = workStart - bufferMinutes;
-  const readyStart = readyEnd - readyMinutes;
-
-  // Walk at first safe light, but never before the workout ends.
-  let walkStart = Math.max(workoutEnd, safeLight);
-  let walkEnd = walkStart + walkMinutes;
-
-  // Chores go before or after the walk, whichever fits best.
-  let availableBeforeWalk = Math.max(0, walkStart - workoutEnd);
-  let choresBefore = Math.min(choresMinutes, availableBeforeWalk);
-  let choresAfter = choresMinutes - choresBefore;
-
-  // If chores + walk would collide with getting ready, shorten chores first,
-  // then move the walk no later than needed while never going earlier than safe light.
-  let latestPreReadyEnd = readyStart;
-  let projectedEnd = walkEnd + choresAfter;
-  if(projectedEnd > latestPreReadyEnd){
-    let overflow = projectedEnd - latestPreReadyEnd;
-    choresAfter = Math.max(0, choresAfter - overflow);
-    projectedEnd = walkEnd + choresAfter;
-  }
-
-  const rows = [
-    [minutesToText(wake), "Wake, water, coffee, creatine"],
-    [`${minutesToText(workoutStart)}–${minutesToText(workoutEnd)}`, `${day.workout} — workout first (${workoutMinutes} min)`]
-  ];
-
-  if(choresBefore > 0){
-    rows.push([
-      `${minutesToText(workoutEnd)}–${minutesToText(workoutEnd+choresBefore)}`,
-      `Morning reset — part 1 (${choresBefore} min)`
-    ]);
-  }
-
-  rows.push([
-    `${minutesToText(walkStart)}–${minutesToText(walkEnd)}`,
-    `Dog walk at first safe light (${walkMinutes} min)`
-  ]);
-
-  if(choresAfter > 0){
-    rows.push([
-      `${minutesToText(walkEnd)}–${minutesToText(walkEnd+choresAfter)}`,
-      `Morning reset — part 2 (${choresAfter} min)`
-    ]);
-  }
-
-  rows.push([
-    `${minutesToText(readyStart)}–${minutesToText(readyEnd)}`,
-    `Shower and get ready — last (${readyMinutes} min)`
-  ]);
-  rows.push([
-    `${minutesToText(readyEnd)}–${minutesToText(workStart)}`,
-    `Breakfast, review Top 3, and settle in (${bufferMinutes}-min buffer)`
-  ]);
-  rows.push([minutesToText(workStart), "At workstation and ready"]);
-
-  return {rows,sunrise,safeLight};
-}
-
-
-function waterKey(date){ return "water_"+date; }
-function getWater(date){ return Number(state[waterKey(date)] || 0); }
-function setWater(date,count){
-  state[waterKey(date)] = Math.max(0,Math.min(4,count));
-  state.habits[habitKey(date,"water")] = count >= 3;
-  save();
-  renderAll();
-}
-function renderWater(day){
-  const count = getWater(day.date);
-  document.getElementById("waterTracker").innerHTML = [1,2,3,4].map(i => `
-    <button type="button" class="water-btn ${i<=count?"filled":""}" data-water="${i}"
-      aria-label="${i<=count?"Mark bottle "+i+" incomplete":"Mark bottle "+i+" complete"}">🥤</button>
-  `).join("");
-  document.querySelectorAll("[data-water]").forEach(btn => btn.addEventListener("click", () => {
-    const i = Number(btn.dataset.water);
-    setWater(day.date, i === count ? i-1 : i);
-  }));
-  document.getElementById("waterStatus").textContent = `${count*30} oz · ${count}/4 bottles`;
-  const msg = count === 0 ? "Start with bottle one." :
-              count === 1 ? "30 oz down." :
-              count === 2 ? "60 oz down. One more reaches your sufficient goal." :
-              count === 3 ? "90 oz — sufficient goal reached ✓" :
-                            "120 oz — hydration bonus earned ⭐";
-  document.getElementById("waterMessage").textContent = msg;
-}
-
-function renderToday() {
-  const day = currentDay();
-  renderWater(day);
-  const completed = habits.filter(h => getHabit(day.date,h[0])).length;
-  document.getElementById("dayBadge").textContent = `Day ${day.dayNumber} · ${day.display}`;
-  document.getElementById("greeting").textContent = `Good morning, Noelle. Welcome to Day ${day.dayNumber} of The 4:20 Club.`;
-  document.getElementById("coachMessage").textContent = coachMessages[(day.dayNumber-1) % coachMessages.length];
-  document.getElementById("dailyProgress").style.width = `${completed / habits.length * 100}%`;
-  document.getElementById("dailyProgressText").textContent = `${completed} of ${habits.length} sunrise habits completed`;
-  const topKey = "top3_" + day.date;
-  const rawTop = state[topKey] || [
-    {text:"",done:false},{text:"",done:false},{text:"",done:false}
-  ];
-  const topItems = rawTop.map(x => typeof x === "string" ? {text:x,done:false} : x);
-  while (topItems.length < 3) topItems.push({text:"",done:false});
-
-  document.getElementById("mustDoList").innerHTML = topItems.slice(0,3).map((item,i)=>`
-    <div class="top3-row">
-      <input aria-label="Complete must-do ${i+1}" type="checkbox" ${item.done ? "checked" : ""} data-topcheck="${i}">
-      <input aria-label="Must-do ${i+1}" type="text" inputmode="text"
-        autocomplete="off" placeholder="Must-do #${i+1} — e.g. Call dentist"
-        value="${String(item.text || "").replace(/"/g,"&quot;")}" data-toptext="${i}">
-    </div>
-  `).join("");
-
-  const saveTop3Now = () => {
-    state[topKey] = [0,1,2].map(i => ({
-      text: document.querySelector(`[data-toptext="${i}"]`).value.trim(),
-      done: document.querySelector(`[data-topcheck="${i}"]`).checked
-    }));
-    save();
-    const btn = document.getElementById("saveTop3");
-    btn.textContent = "Saved ✓";
-    setTimeout(() => btn.textContent = "Save Today's Top 3", 1200);
-  };
-  document.getElementById("saveTop3").onclick = saveTop3Now;
-  document.querySelectorAll("[data-toptext]").forEach(el => {
-    el.addEventListener("blur", saveTop3Now);
-    el.addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); saveTop3Now(); el.blur(); }});
-  });
-  document.querySelectorAll("[data-topcheck]").forEach(el => el.addEventListener("change", saveTop3Now));
-
-  document.getElementById("todayMetrics").innerHTML = `
-    <div class="metric"><span class="small">Workout</span><strong style="font-size:17px">${day.workout}</strong></div>
-    <div class="metric"><span class="small">Challenge</span><strong style="font-size:17px">${day.challenge}</strong></div>
-    <div class="metric"><span class="small">Meals</span><strong style="font-size:17px">3 + 2 + bowl</strong></div>
-    <div class="metric"><span class="small">Sunrise score</span><strong>${completed}/8</strong></div>`;
-
-  const flow = adaptiveSchedule(day);
-  document.getElementById("sunriseNote").textContent =
-    `Sunrise: ${minutesToText(flow.sunrise)} · Earliest coyote-conscious walk: ${minutesToText(flow.safeLight)} · Schedule recalibrates automatically.`;
-  document.getElementById("scheduleList").innerHTML = flow.rows.map(r =>
-    `<div class="schedule-row"><strong>${r[0]}</strong><div>${r[1]}</div></div>`
-  ).join("");
-
-  document.getElementById("habitList").innerHTML = habits.map(([key,label]) =>
-    `<label class="check-row"><input type="checkbox" data-habit="${key}" ${getHabit(day.date,key)?"checked":""}><span>${label}</span></label>`
-  ).join("");
-  document.querySelectorAll("[data-habit]").forEach(el => el.addEventListener("change", e => setHabit(day.date,e.target.dataset.habit,e.target.checked)));
-}
-
-function renderWorkout() {
-  const day = currentDay();
-  const list = APP.workouts[day.workout] || APP.workouts.Recovery;
-  document.getElementById("workoutName").textContent = day.workout;
-  document.getElementById("exerciseList").innerHTML = list.map((ex,i) =>
-    `<div class="exercise-row"><strong>${ex.name}</strong><div>${ex.sets}<br><button class="secondary demo-btn" data-demo="${i}" style="margin-top:6px">Show demo</button><div class="demo" id="demo${i}">${ex.demo}</div></div></div>`
-  ).join("");
-  document.querySelectorAll(".demo-btn").forEach(btn => btn.addEventListener("click", () => {
-    const box = document.getElementById("demo"+btn.dataset.demo);
-    box.classList.toggle("open");
-    btn.textContent = box.classList.contains("open") ? "Hide demo" : "Show demo";
-  }));
-  document.getElementById("completeWorkout").textContent = getHabit(day.date,"workout") ? "Completed ✓" : "Mark complete";
-}
-document.getElementById("completeWorkout").addEventListener("click", () => {
-  const day=currentDay(); setHabit(day.date,"workout",!getHabit(day.date,"workout"));
-});
-
-let remaining=40*60, timerId=null;
-function timerText() {
-  const m=Math.floor(remaining/60), s=remaining%60;
-  document.getElementById("timerDisplay").textContent=`${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;
-}
-document.getElementById("timerStart").addEventListener("click", () => {
-  if(timerId) return;
-  timerId=setInterval(()=>{ if(remaining>0){remaining--;timerText();} else {clearInterval(timerId);timerId=null;} },1000);
-});
-document.getElementById("timerPause").addEventListener("click",()=>{clearInterval(timerId);timerId=null;});
-document.getElementById("timerReset").addEventListener("click",()=>{clearInterval(timerId);timerId=null;remaining=40*60;timerText();});
-document.querySelectorAll("[data-minutes]").forEach(b=>b.addEventListener("click",()=>{clearInterval(timerId);timerId=null;remaining=Number(b.dataset.minutes)*60;timerText();}));
-
-function renderMeals() {
-  const day=currentDay();
-  document.getElementById("mealList").innerHTML = Object.entries(day.meals).map(([k,v]) =>
-    `<div class="meal-row"><strong>${k}</strong><div>${v}</div></div>`
-  ).join("");
-  const bowl=APP.bowls[day.meals["Power Bowl"]];
-  document.getElementById("bowlName").textContent = "🥣 "+day.meals["Power Bowl"];
-  document.getElementById("bowlDetails").innerHTML = `
-    <p><strong>Protein:</strong> ${bowl.protein} · <strong>Fiber:</strong> ${bowl.fiber}</p>
-    <ul>${bowl.ingredients.map(x=>`<li>${x}</li>`).join("")}</ul>`;
-}
-
-function renderChallenge() {
-  const day=currentDay(), c=currentChallenge(day);
-  const val=Number(state.challenge[c.name]||0);
-  document.getElementById("challengeWeek").textContent=c.week;
-  document.getElementById("challengeName").textContent=c.name;
-  document.getElementById("challengeUnit").textContent=`Goal: ${c.goal} ${c.unit}`;
-  document.getElementById("challengeProgress").style.width=`${Math.min(100,val/c.goal*100)}%`;
-  document.getElementById("challengeProgressText").textContent=`${val} / ${c.goal} ${c.unit}`;
-}
-document.getElementById("addChallenge").addEventListener("click",()=>{
-  const day=currentDay(), c=currentChallenge(day);
-  const add=Number(document.getElementById("challengeAdd").value||0);
-  state.challenge[c.name]=Number(state.challenge[c.name]||0)+add;
-  document.getElementById("challengeAdd").value="";
-  save(); renderAll();
-});
-
-const groceries = [
-  ["Proteins",["Chicken breast","Lean ground turkey or beef","Salmon","Shrimp","Eggs","Greek yogurt","Cottage cheese","Protein powder","String cheese","Edamame","Tuna"]],
-  ["Fiber and produce",["Berries","Apples","Bananas","Pears","Broccoli","Spinach","Mixed salad greens","Carrots","Cucumbers","Tomatoes","Avocados","Sweet potatoes","Black beans","Chickpeas"]],
-  ["Crunch and bowl lab",["Chia seeds","Ground flax","High-fiber cereal","Protein granola","Almonds","PB2","Mini chocolate chips","Cinnamon","Lemon"]],
-  ["Carbs and extras",["Quinoa or rice","Whole-grain bread or wraps","Baby potatoes","Hummus","Salsa","Olive oil"]]
-];
-function renderGrocery() {
-  const week=currentChallenge(currentDay()).week;
-  document.getElementById("groceryList").innerHTML=groceries.map(([section,items])=>`
-    <h3>${section}</h3>
-    ${items.map(item=>{
-      const k=week+"_"+item;
-      return `<label class="check-row"><input type="checkbox" data-grocery="${k}" ${state.grocery[k]?"checked":""}><span>${item}</span></label>`;
-    }).join("")}
-  `).join("");
-  document.querySelectorAll("[data-grocery]").forEach(el=>el.addEventListener("change",e=>{state.grocery[e.target.dataset.grocery]=e.target.checked;save();}));
-}
-
-function renderChart(id, field) {
-  const data=state.checkins.filter(x=>x[field]!=="" && x[field]!=null).slice(-8);
-  const el=document.getElementById(id);
-  if(!data.length){el.innerHTML='<p class="small">Add a check-in to start this graph.</p>';return;}
-  const vals=data.map(x=>Number(x[field]));
-  const min=Math.min(...vals), max=Math.max(...vals), span=(max-min)||1;
-  el.innerHTML=data.map((x,i)=>{
-    const h=30+((Number(x[field])-min)/span)*120;
-    return `<div class="bar" style="height:${h}px" title="${x.date}: ${x[field]}"><span>${x.date.slice(5)}</span></div>`;
-  }).join("");
-}
-function renderProgress() {
-  const count=(key)=>APP.days.filter(d=>getHabit(d.date,key)).length;
-  document.getElementById("sunriseCount").textContent=APP.days.filter(d=>habits.filter(h=>getHabit(d.date,h[0])).length>=5).length;
-  document.getElementById("dogWalkCount").textContent=count("dog");
-  document.getElementById("workoutCount").textContent=count("workout");
-  document.getElementById("proteinCount").textContent=count("protein");
-  document.getElementById("waterCount").textContent=APP.days.filter(d=>getWater(d.date)>=3).length;
-  renderChart("weightChart","weight");
-  renderChart("waistChart","waist");
-  renderChart("strengthChart","squat");
-}
-document.getElementById("saveCheckin").addEventListener("click",()=>{
-  state.checkins.push({
-    date:isoToday(),
-    weight:document.getElementById("weightInput").value,
-    waist:document.getElementById("waistInput").value,
-    squat:document.getElementById("squatInput").value,
-    pushups:document.getElementById("pushupInput").value
-  });
-  ["weightInput","waistInput","squatInput","pushupInput"].forEach(id=>document.getElementById(id).value="");
-  save(); renderAll();
-});
-
-function renderBadges() {
-  const sunrise=APP.days.filter(d=>habits.filter(h=>getHabit(d.date,h[0])).length>=5).length;
-  const workout=APP.days.filter(d=>getHabit(d.date,"workout")).length;
-  const dog=APP.days.filter(d=>getHabit(d.date,"dog")).length;
-  const protein=APP.days.filter(d=>getHabit(d.date,"protein")).length;
-  const swing=Number(state.challenge["Swing Into It"]||0);
-  const badges=[
-    ["🌅","First Sunrise",sunrise>=1],
-    ["🌄","5 Sunrises",sunrise>=5],
-    ["☀️","14 Sunrises",sunrise>=14],
-    ["💪","First Workout",workout>=1],
-    ["🏋️","10 Workouts",workout>=10],
-    ["🐕","Dog’s Favorite Human",dog>=14],
-    ["🥣","Power Bowl Scientist",APP.days.filter(d=>getHabit(d.date,"bowl")).length>=7],
-    ["🥩","Protein Pro",protein>=14],
-    ["💧","Hydration Hero",APP.days.filter(d=>getWater(d.date)>=3).length>=7],
-    ["💄","Beauty Vault Week",Object.values(state.beauty.days||{}).filter(Boolean).length>=7],
-    ["🔥","Swing Queen",swing>=500],
-    ["👑","August Founder",sunrise>=20]
-  ];
-  document.getElementById("badgeGrid").innerHTML=badges.map(b=>`
-    <div class="badge-card ${b[2]?"earned":""}"><div class="badge-icon">${b[0]}</div><strong>${b[1]}</strong><div class="small">${b[2]?"Earned":"Locked"}</div></div>
-  `).join("");
-}
-
-
-function beautyDateKey(){ return isoToday(); }
-function calculateBeautyStreak(){
-  let streak = 0;
-  let d = new Date(isoToday()+"T12:00:00");
-  while(true){
-    const key = d.toLocaleDateString("en-CA");
-    if(state.beauty.days[key]){
-      streak++;
-      d.setDate(d.getDate()-1);
-    } else break;
-  }
-  return streak;
-}
-function daysUntilReview(dateAdded){
-  const added = new Date(dateAdded+"T12:00:00");
-  const review = new Date(added);
-  review.setDate(review.getDate()+30);
-  const today = new Date(isoToday()+"T12:00:00");
-  return Math.ceil((review-today)/86400000);
-}
-function renderBeauty(){
-  const box = document.getElementById("beautyNoBuyToday");
-  if(!box) return;
-  const todayKey = beautyDateKey();
-  box.checked = !!state.beauty.days[todayKey];
-  const days = Object.values(state.beauty.days).filter(Boolean).length;
-  const saved = state.beauty.skipped.reduce((sum,x)=>sum+Number(x.amount||0),0);
-  document.getElementById("beautyStreak").textContent = calculateBeautyStreak();
-  document.getElementById("beautyDays").textContent = days;
-  document.getElementById("beautySaved").textContent = "$"+saved.toFixed(0);
-  document.getElementById("wishlistCount").textContent = state.beauty.wishlist.length;
-  document.getElementById("skippedList").innerHTML =
-    state.beauty.skipped.slice().reverse().map(x=>`
-      <div class="grocery-row">
-        <strong>$${Number(x.amount).toFixed(2)}</strong>
-        <div>${x.item}<div class="small">${x.date}</div></div>
-      </div>
-    `).join("") || '<p class="small">No skipped purchases logged yet.</p>';
-  document.getElementById("wishlistList").innerHTML =
-    state.beauty.wishlist.map((x,i)=>{
-      const daysLeft = daysUntilReview(x.date);
-      const status = daysLeft > 0 ? `${daysLeft} days until review` : "Ready for review";
-      return `<div class="card" style="margin-top:10px">
-        <strong>${x.item}</strong> · $${Number(x.price||0).toFixed(2)}
-        <div class="small">${status}</div>
-        <div class="small">${x.reason||""}</div>
-        <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">
-          <button class="secondary wish-remove" data-index="${i}">I don’t want it</button>
-          <button class="secondary wish-keep" data-index="${i}">Keep waiting</button>
-        </div>
-      </div>`;
-    }).join("") || '<p class="small">Your vault is empty.</p>';
-  document.querySelectorAll(".wish-remove").forEach(btn=>btn.addEventListener("click",()=>{
-    state.beauty.wishlist.splice(Number(btn.dataset.index),1);
-    save(); renderBeauty();
-  }));
-  document.querySelectorAll(".wish-keep").forEach(btn=>btn.addEventListener("click",()=>{
-    state.beauty.wishlist[Number(btn.dataset.index)].date = isoToday();
-    save(); renderBeauty();
-  }));
-}
-document.getElementById("beautyNoBuyToday").addEventListener("change",e=>{
-  state.beauty.days[beautyDateKey()] = e.target.checked;
-  save(); renderBeauty(); renderBadges();
-});
-document.getElementById("addSkipped").addEventListener("click",()=>{
-  const item = document.getElementById("skippedItem").value.trim();
-  const amount = Number(document.getElementById("skippedAmount").value||0);
-  if(!item || amount<=0) return;
-  state.beauty.skipped.push({item,amount,date:isoToday()});
-  document.getElementById("skippedItem").value="";
-  document.getElementById("skippedAmount").value="";
-  save(); renderBeauty();
-});
-document.getElementById("addWish").addEventListener("click",()=>{
-  const item = document.getElementById("wishItem").value.trim();
-  const price = Number(document.getElementById("wishPrice").value||0);
-  const reason = document.getElementById("wishReason").value.trim();
-  if(!item) return;
-  state.beauty.wishlist.push({item,price,reason,date:isoToday()});
-  document.getElementById("wishItem").value="";
-  document.getElementById("wishPrice").value="";
-  document.getElementById("wishReason").value="";
-  save(); renderBeauty();
-});
-const stashMissions = [
-  "Wear a lipstick you have not used in six months.",
-  "Create a full look using one forgotten palette.",
-  "Use the oldest product in one makeup drawer.",
-  "Clean five makeup brushes.",
-  "Choose one product to finish before buying another.",
-  "Rediscover a blush you used to love.",
-  "Organize one small beauty drawer for five minutes.",
-  "Photograph a look created entirely from your stash."
-];
-document.getElementById("stashButton").addEventListener("click",()=>{
-  const pick = stashMissions[Math.floor(Math.random()*stashMissions.length)];
-  document.getElementById("stashPrompt").textContent = pick;
-});
-
-function renderAll() {
-  renderToday(); renderWorkout(); renderMeals(); renderChallenge(); renderGrocery(); renderProgress(); renderBadges(); renderBeauty(); timerText();
-}
-renderAll();
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => navigator.serviceWorker.register("./service-worker.js").catch(()=>{}));
-}
+const APP={"days": [{"date": "2026-08-03", "display": "Monday, August 3", "dayNumber": 1, "workout": "Strength A", "schedule": [["4:20 AM", "Wake, water, coffee, creatine"], ["4:35\u20135:10", "Strength A"], ["5:10\u20136:10", "Morning chores"], ["6:10\u20136:50", "Get ready"], ["6:50\u20137:35", "Dog walk"], ["Daytime", "Optional work, errands, meal prep, appointments"], ["8:45 PM", "Wind-down"], ["9:15 PM", "In bed"]], "meals": {"Breakfast": "Egg scramble with spinach, tomatoes, and feta; whole-grain toast", "Snack 1": "Cottage cheese with berries", "Lunch": "Chicken grain bowl with quinoa, cucumber, tomato, greens, and hummus", "Snack 2": "Apple with string cheese", "Dinner": "Salmon, roasted potatoes, and broccoli", "Power Bowl": "Sunrise Berry Crunch"}, "challenge": "Swing Into It"}, {"date": "2026-08-04", "display": "Tuesday, August 4", "dayNumber": 2, "workout": "Mobility", "schedule": [["4:20 AM", "Wake, water, coffee, creatine"], ["4:35\u20134:50", "Mobility"], ["4:50\u20135:50", "Morning chores"], ["5:50\u20136:30", "Get ready"], ["6:30\u20137:15", "Dog walk"], ["7:30 AM\u20137:00 PM", "Work"], ["7:10 PM", "Easy dinner"], ["7:45 PM", "Power Bowl"], ["8:45 PM", "Wind-down"], ["9:15 PM", "In bed"]], "meals": {"Breakfast": "Greek yogurt, berries, chia, and a small crunchy topping", "Snack 1": "Protein shake and a banana", "Lunch": "Turkey and avocado wrap with crunchy vegetables", "Snack 2": "Edamame with sea salt", "Dinner": "Lean beef taco bowl with rice, black beans, salsa, lettuce, and avocado", "Power Bowl": "Sunrise Berry Crunch"}, "challenge": "Swing Into It"}, {"date": "2026-08-05", "display": "Wednesday, August 5", "dayNumber": 3, "workout": "Strength B", "schedule": [["4:20 AM", "Wake, water, coffee, creatine"], ["4:35\u20135:10", "Strength B"], ["5:10\u20136:10", "Morning chores"], ["6:10\u20136:50", "Get ready"], ["6:50\u20137:35", "Dog walk"], ["7:30 AM\u20137:00 PM", "Work"], ["7:10 PM", "Easy dinner"], ["7:45 PM", "Power Bowl"], ["8:45 PM", "Wind-down"], ["9:15 PM", "In bed"]], "meals": {"Breakfast": "Eggs, turkey sausage, and fruit", "Snack 1": "Greek yogurt with raspberries", "Lunch": "Leftover taco bowl", "Snack 2": "Hummus with carrots and cucumbers", "Dinner": "Chicken stir-fry with mixed vegetables and rice", "Power Bowl": "Murph Mud Pie"}, "challenge": "Swing Into It"}, {"date": "2026-08-06", "display": "Thursday, August 6", "dayNumber": 4, "workout": "Mobility", "schedule": [["4:20 AM", "Wake, water, coffee, creatine"], ["4:35\u20134:50", "Mobility"], ["4:50\u20135:50", "Morning chores"], ["5:50\u20136:30", "Get ready"], ["6:30\u20137:15", "Dog walk"], ["7:30 AM\u20137:00 PM", "Work"], ["7:10 PM", "Easy dinner"], ["7:45 PM", "Power Bowl"], ["8:45 PM", "Wind-down"], ["9:15 PM", "In bed"]], "meals": {"Breakfast": "Protein smoothie with berries, spinach, milk, and flax", "Snack 1": "Cottage cheese and peaches", "Lunch": "Tuna salad on whole-grain toast with a side salad", "Snack 2": "Pear and a small handful of almonds", "Dinner": "Lean steak, sweet potato, and green beans", "Power Bowl": "Murph Mud Pie"}, "challenge": "Swing Into It"}, {"date": "2026-08-07", "display": "Friday, August 7", "dayNumber": 5, "workout": "Strength C", "schedule": [["4:20 AM", "Wake, water, coffee, creatine"], ["4:35\u20135:10", "Strength C"], ["5:10\u20136:10", "Morning chores"], ["6:10\u20136:50", "Get ready"], ["6:50\u20137:35", "Dog walk"], ["7:30 AM\u20137:00 PM", "Work"], ["7:10 PM", "Easy dinner"], ["7:45 PM", "Power Bowl"], ["8:45 PM", "Wind-down"], ["9:15 PM", "In bed"]], "meals": {"Breakfast": "High-protein oatmeal with berries and cinnamon", "Snack 1": "Protein shake", "Lunch": "Chicken Caesar-style salad with chickpeas", "Snack 2": "String cheese and grapes", "Dinner": "Turkey burger, giant salad, and oven fries", "Power Bowl": "Annie Apple Crisp"}, "challenge": "Swing Into It"}, {"date": "2026-08-08", "display": "Saturday, August 8", "dayNumber": 6, "workout": "Conditioning", "schedule": [["4:20 AM", "Wake, water, coffee, creatine"], ["4:35\u20134:55", "Conditioning"], ["4:55\u20135:55", "Morning chores"], ["5:55\u20136:35", "Get ready"], ["6:35\u20137:20", "Dog walk"], ["8:00 AM\u20134:00 PM", "Work"], ["After work", "Walk only if desired; otherwise recover"], ["8:45 PM", "Wind-down"], ["9:15 PM", "In bed"]], "meals": {"Breakfast": "Eggs, avocado toast, and berries", "Snack 1": "Greek yogurt with chia", "Lunch": "Shrimp salad with corn, black beans, and avocado", "Snack 2": "Air-popped popcorn and a cheese stick", "Dinner": "Shrimp tacos with cabbage slaw and beans", "Power Bowl": "Blueberry Muffin"}, "challenge": "Swing Into It"}, {"date": "2026-08-09", "display": "Sunday, August 9", "dayNumber": 7, "workout": "Recovery", "schedule": [["4:20 AM", "Wake, water, coffee"], ["4:35\u20135:20", "Dog walk"], ["5:20\u20136:20", "Morning chores"], ["6:20\u20137:00", "Get ready"], ["7:00\u20137:30", "Breakfast and prep"], ["8:00 AM\u20134:00 PM", "Work"], ["4:30 PM", "Meal prep and grocery reset"], ["8:45 PM", "Wind-down"], ["9:15 PM", "In bed"]], "meals": {"Breakfast": "Protein pancakes with berries", "Snack 1": "Cottage cheese with pineapple", "Lunch": "Leftovers or a protein-forward sandwich and fruit", "Snack 2": "Roasted chickpeas", "Dinner": "Sheet-pan chicken, vegetables, and baby potatoes", "Power Bowl": "Blueberry Muffin"}, "challenge": "Swing Into It"}, {"date": "2026-08-10", "display": "Monday, August 10", "dayNumber": 8, "workout": "Strength A", "schedule": [["4:20 AM", "Wake, water, coffee, creatine"], ["4:35\u20135:10", "Strength A"], ["5:10\u20136:10", "Morning chores"], ["6:10\u20136:50", "Get ready"], ["6:50\u20137:35", "Dog walk"], ["Daytime", "Optional work, errands, meal prep, appointments"], ["8:45 PM", "Wind-down"], ["9:15 PM", "In bed"]], "meals": {"Breakfast": "Egg scramble with spinach, tomatoes, and feta; whole-grain toast", "Snack 1": "Cottage cheese with berries", "Lunch": "Chicken grain bowl with quinoa, cucumber, tomato, greens, and hummus", "Snack 2": "Apple with string cheese", "Dinner": "Salmon, roasted potatoes, and broccoli", "Power Bowl": "Sunrise Berry Crunch"}, "challenge": "Double-Under Revival"}, {"date": "2026-08-11", "display": "Tuesday, August 11", "dayNumber": 9, "workout": "Mobility", "schedule": [["4:20 AM", "Wake, water, coffee, creatine"], ["4:35\u20134:50", "Mobility"], ["4:50\u20135:50", "Morning chores"], ["5:50\u20136:30", "Get ready"], ["6:30\u20137:15", "Dog walk"], ["7:30 AM\u20137:00 PM", "Work"], ["7:10 PM", "Easy dinner"], ["7:45 PM", "Power Bowl"], ["8:45 PM", "Wind-down"], ["9:15 PM", "In bed"]], "meals": {"Breakfast": "Greek yogurt, berries, chia, and a small crunchy topping", "Snack 1": "Protein shake and a banana", "Lunch": "Turkey and avocado wrap with crunchy vegetables", "Snack 2": "Edamame with sea salt", "Dinner": "Lean beef taco bowl with rice, black beans, salsa, lettuce, and avocado", "Power Bowl": "Sunrise Berry Crunch"}, "challenge": "Double-Under Revival"}, {"date": "2026-08-12", "display": "Wednesday, August 12", "dayNumber": 10, "workout": "Strength B", "schedule": [["4:20 AM", "Wake, water, coffee, creatine"], ["4:35\u20135:10", "Strength B"], ["5:10\u20136:10", "Morning chores"], ["6:10\u20136:50", "Get ready"], ["6:50\u20137:35", "Dog walk"], ["7:30 AM\u20137:00 PM", "Work"], ["7:10 PM", "Easy dinner"], ["7:45 PM", "Power Bowl"], ["8:45 PM", "Wind-down"], ["9:15 PM", "In bed"]], "meals": {"Breakfast": "Eggs, turkey sausage, and fruit", "Snack 1": "Greek yogurt with raspberries", "Lunch": "Leftover taco bowl", "Snack 2": "Hummus with carrots and cucumbers", "Dinner": "Chicken stir-fry with mixed vegetables and rice", "Power Bowl": "Murph Mud Pie"}, "challenge": "Double-Under Revival"}, {"date": "2026-08-13", "display": "Thursday, August 13", "dayNumber": 11, "workout": "Mobility", "schedule": [["4:20 AM", "Wake, water, coffee, creatine"], ["4:35\u20134:50", "Mobility"], ["4:50\u20135:50", "Morning chores"], ["5:50\u20136:30", "Get ready"], ["6:30\u20137:15", "Dog walk"], ["7:30 AM\u20137:00 PM", "Work"], ["7:10 PM", "Easy dinner"], ["7:45 PM", "Power Bowl"], ["8:45 PM", "Wind-down"], ["9:15 PM", "In bed"]], "meals": {"Breakfast": "Protein smoothie with berries, spinach, milk, and flax", "Snack 1": "Cottage cheese and peaches", "Lunch": "Tuna salad on whole-grain toast with a side salad", "Snack 2": "Pear and a small handful of almonds", "Dinner": "Lean steak, sweet potato, and green beans", "Power Bowl": "Murph Mud Pie"}, "challenge": "Double-Under Revival"}, {"date": "2026-08-14", "display": "Friday, August 14", "dayNumber": 12, "workout": "Strength C", "schedule": [["4:20 AM", "Wake, water, coffee, creatine"], ["4:35\u20135:10", "Strength C"], ["5:10\u20136:10", "Morning chores"], ["6:10\u20136:50", "Get ready"], ["6:50\u20137:35", "Dog walk"], ["7:30 AM\u20137:00 PM", "Work"], ["7:10 PM", "Easy dinner"], ["7:45 PM", "Power Bowl"], ["8:45 PM", "Wind-down"], ["9:15 PM", "In bed"]], "meals": {"Breakfast": "High-protein oatmeal with berries and cinnamon", "Snack 1": "Protein shake", "Lunch": "Chicken Caesar-style salad with chickpeas", "Snack 2": "String cheese and grapes", "Dinner": "Turkey burger, giant salad, and oven fries", "Power Bowl": "Annie Apple Crisp"}, "challenge": "Double-Under Revival"}, {"date": "2026-08-15", "display": "Saturday, August 15", "dayNumber": 13, "workout": "Conditioning", "schedule": [["4:20 AM", "Wake, water, coffee, creatine"], ["4:35\u20134:55", "Conditioning"], ["4:55\u20135:55", "Morning chores"], ["5:55\u20136:35", "Get ready"], ["6:35\u20137:20", "Dog walk"], ["8:00 AM\u20134:00 PM", "Work"], ["After work", "Walk only if desired; otherwise recover"], ["8:45 PM", "Wind-down"], ["9:15 PM", "In bed"]], "meals": {"Breakfast": "Eggs, avocado toast, and berries", "Snack 1": "Greek yogurt with chia", "Lunch": "Shrimp salad with corn, black beans, and avocado", "Snack 2": "Air-popped popcorn and a cheese stick", "Dinner": "Shrimp tacos with cabbage slaw and beans", "Power Bowl": "Blueberry Muffin"}, "challenge": "Double-Under Revival"}, {"date": "2026-08-16", "display": "Sunday, August 16", "dayNumber": 14, "workout": "Recovery", "schedule": [["4:20 AM", "Wake, water, coffee"], ["4:35\u20135:20", "Dog walk"], ["5:20\u20136:20", "Morning chores"], ["6:20\u20137:00", "Get ready"], ["7:00\u20137:30", "Breakfast and prep"], ["8:00 AM\u20134:00 PM", "Work"], ["4:30 PM", "Meal prep and grocery reset"], ["8:45 PM", "Wind-down"], ["9:15 PM", "In bed"]], "meals": {"Breakfast": "Protein pancakes with berries", "Snack 1": "Cottage cheese with pineapple", "Lunch": "Leftovers or a protein-forward sandwich and fruit", "Snack 2": "Roasted chickpeas", "Dinner": "Sheet-pan chicken, vegetables, and baby potatoes", "Power Bowl": "Blueberry Muffin"}, "challenge": "Double-Under Revival"}, {"date": "2026-08-17", "display": "Monday, August 17", "dayNumber": 15, "workout": "Strength A", "schedule": [["4:20 AM", "Wake, water, coffee, creatine"], ["4:35\u20135:10", "Strength A"], ["5:10\u20136:10", "Morning chores"], ["6:10\u20136:50", "Get ready"], ["6:50\u20137:35", "Dog walk"], ["Daytime", "Optional work, errands, meal prep, appointments"], ["8:45 PM", "Wind-down"], ["9:15 PM", "In bed"]], "meals": {"Breakfast": "Egg scramble with spinach, tomatoes, and feta; whole-grain toast", "Snack 1": "Cottage cheese with berries", "Lunch": "Chicken grain bowl with quinoa, cucumber, tomato, greens, and hummus", "Snack 2": "Apple with string cheese", "Dinner": "Salmon, roasted potatoes, and broccoli", "Power Bowl": "Sunrise Berry Crunch"}, "challenge": "Push-Up Ladder"}, {"date": "2026-08-18", "display": "Tuesday, August 18", "dayNumber": 16, "workout": "Mobility", "schedule": [["4:20 AM", "Wake, water, coffee, creatine"], ["4:35\u20134:50", "Mobility"], ["4:50\u20135:50", "Morning chores"], ["5:50\u20136:30", "Get ready"], ["6:30\u20137:15", "Dog walk"], ["7:30 AM\u20137:00 PM", "Work"], ["7:10 PM", "Easy dinner"], ["7:45 PM", "Power Bowl"], ["8:45 PM", "Wind-down"], ["9:15 PM", "In bed"]], "meals": {"Breakfast": "Greek yogurt, berries, chia, and a small crunchy topping", "Snack 1": "Protein shake and a banana", "Lunch": "Turkey and avocado wrap with crunchy vegetables", "Snack 2": "Edamame with sea salt", "Dinner": "Lean beef taco bowl with rice, black beans, salsa, lettuce, and avocado", "Power Bowl": "Sunrise Berry Crunch"}, "challenge": "Push-Up Ladder"}, {"date": "2026-08-19", "display": "Wednesday, August 19", "dayNumber": 17, "workout": "Strength B", "schedule": [["4:20 AM", "Wake, water, coffee, creatine"], ["4:35\u20135:10", "Strength B"], ["5:10\u20136:10", "Morning chores"], ["6:10\u20136:50", "Get ready"], ["6:50\u20137:35", "Dog walk"], ["7:30 AM\u20137:00 PM", "Work"], ["7:10 PM", "Easy dinner"], ["7:45 PM", "Power Bowl"], ["8:45 PM", "Wind-down"], ["9:15 PM", "In bed"]], "meals": {"Breakfast": "Eggs, turkey sausage, and fruit", "Snack 1": "Greek yogurt with raspberries", "Lunch": "Leftover taco bowl", "Snack 2": "Hummus with carrots and cucumbers", "Dinner": "Chicken stir-fry with mixed vegetables and rice", "Power Bowl": "Murph Mud Pie"}, "challenge": "Push-Up Ladder"}, {"date": "2026-08-20", "display": "Thursday, August 20", "dayNumber": 18, "workout": "Mobility", "schedule": [["4:20 AM", "Wake, water, coffee, creatine"], ["4:35\u20134:50", "Mobility"], ["4:50\u20135:50", "Morning chores"], ["5:50\u20136:30", "Get ready"], ["6:30\u20137:15", "Dog walk"], ["7:30 AM\u20137:00 PM", "Work"], ["7:10 PM", "Easy dinner"], ["7:45 PM", "Power Bowl"], ["8:45 PM", "Wind-down"], ["9:15 PM", "In bed"]], "meals": {"Breakfast": "Protein smoothie with berries, spinach, milk, and flax", "Snack 1": "Cottage cheese and peaches", "Lunch": "Tuna salad on whole-grain toast with a side salad", "Snack 2": "Pear and a small handful of almonds", "Dinner": "Lean steak, sweet potato, and green beans", "Power Bowl": "Murph Mud Pie"}, "challenge": "Push-Up Ladder"}, {"date": "2026-08-21", "display": "Friday, August 21", "dayNumber": 19, "workout": "Strength C", "schedule": [["4:20 AM", "Wake, water, coffee, creatine"], ["4:35\u20135:10", "Strength C"], ["5:10\u20136:10", "Morning chores"], ["6:10\u20136:50", "Get ready"], ["6:50\u20137:35", "Dog walk"], ["7:30 AM\u20137:00 PM", "Work"], ["7:10 PM", "Easy dinner"], ["7:45 PM", "Power Bowl"], ["8:45 PM", "Wind-down"], ["9:15 PM", "In bed"]], "meals": {"Breakfast": "High-protein oatmeal with berries and cinnamon", "Snack 1": "Protein shake", "Lunch": "Chicken Caesar-style salad with chickpeas", "Snack 2": "String cheese and grapes", "Dinner": "Turkey burger, giant salad, and oven fries", "Power Bowl": "Annie Apple Crisp"}, "challenge": "Push-Up Ladder"}, {"date": "2026-08-22", "display": "Saturday, August 22", "dayNumber": 20, "workout": "Conditioning", "schedule": [["4:20 AM", "Wake, water, coffee, creatine"], ["4:35\u20134:55", "Conditioning"], ["4:55\u20135:55", "Morning chores"], ["5:55\u20136:35", "Get ready"], ["6:35\u20137:20", "Dog walk"], ["8:00 AM\u20134:00 PM", "Work"], ["After work", "Walk only if desired; otherwise recover"], ["8:45 PM", "Wind-down"], ["9:15 PM", "In bed"]], "meals": {"Breakfast": "Eggs, avocado toast, and berries", "Snack 1": "Greek yogurt with chia", "Lunch": "Shrimp salad with corn, black beans, and avocado", "Snack 2": "Air-popped popcorn and a cheese stick", "Dinner": "Shrimp tacos with cabbage slaw and beans", "Power Bowl": "Blueberry Muffin"}, "challenge": "Push-Up Ladder"}, {"date": "2026-08-23", "display": "Sunday, August 23", "dayNumber": 21, "workout": "Recovery", "schedule": [["4:20 AM", "Wake, water, coffee"], ["4:35\u20135:20", "Dog walk"], ["5:20\u20136:20", "Morning chores"], ["6:20\u20137:00", "Get ready"], ["7:00\u20137:30", "Breakfast and prep"], ["8:00 AM\u20134:00 PM", "Work"], ["4:30 PM", "Meal prep and grocery reset"], ["8:45 PM", "Wind-down"], ["9:15 PM", "In bed"]], "meals": {"Breakfast": "Protein pancakes with berries", "Snack 1": "Cottage cheese with pineapple", "Lunch": "Leftovers or a protein-forward sandwich and fruit", "Snack 2": "Roasted chickpeas", "Dinner": "Sheet-pan chicken, vegetables, and baby potatoes", "Power Bowl": "Blueberry Muffin"}, "challenge": "Push-Up Ladder"}, {"date": "2026-08-24", "display": "Monday, August 24", "dayNumber": 22, "workout": "Strength A", "schedule": [["4:20 AM", "Wake, water, coffee, creatine"], ["4:35\u20135:10", "Strength A"], ["5:10\u20136:10", "Morning chores"], ["6:10\u20136:50", "Get ready"], ["6:50\u20137:35", "Dog walk"], ["Daytime", "Optional work, errands, meal prep, appointments"], ["8:45 PM", "Wind-down"], ["9:15 PM", "In bed"]], "meals": {"Breakfast": "Egg scramble with spinach, tomatoes, and feta; whole-grain toast", "Snack 1": "Cottage cheese with berries", "Lunch": "Chicken grain bowl with quinoa, cucumber, tomato, greens, and hummus", "Snack 2": "Apple with string cheese", "Dinner": "Salmon, roasted potatoes, and broccoli", "Power Bowl": "Sunrise Berry Crunch"}, "challenge": "Farmer Carry PR"}, {"date": "2026-08-25", "display": "Tuesday, August 25", "dayNumber": 23, "workout": "Mobility", "schedule": [["4:20 AM", "Wake, water, coffee, creatine"], ["4:35\u20134:50", "Mobility"], ["4:50\u20135:50", "Morning chores"], ["5:50\u20136:30", "Get ready"], ["6:30\u20137:15", "Dog walk"], ["7:30 AM\u20137:00 PM", "Work"], ["7:10 PM", "Easy dinner"], ["7:45 PM", "Power Bowl"], ["8:45 PM", "Wind-down"], ["9:15 PM", "In bed"]], "meals": {"Breakfast": "Greek yogurt, berries, chia, and a small crunchy topping", "Snack 1": "Protein shake and a banana", "Lunch": "Turkey and avocado wrap with crunchy vegetables", "Snack 2": "Edamame with sea salt", "Dinner": "Lean beef taco bowl with rice, black beans, salsa, lettuce, and avocado", "Power Bowl": "Sunrise Berry Crunch"}, "challenge": "Farmer Carry PR"}, {"date": "2026-08-26", "display": "Wednesday, August 26", "dayNumber": 24, "workout": "Strength B", "schedule": [["4:20 AM", "Wake, water, coffee, creatine"], ["4:35\u20135:10", "Strength B"], ["5:10\u20136:10", "Morning chores"], ["6:10\u20136:50", "Get ready"], ["6:50\u20137:35", "Dog walk"], ["7:30 AM\u20137:00 PM", "Work"], ["7:10 PM", "Easy dinner"], ["7:45 PM", "Power Bowl"], ["8:45 PM", "Wind-down"], ["9:15 PM", "In bed"]], "meals": {"Breakfast": "Eggs, turkey sausage, and fruit", "Snack 1": "Greek yogurt with raspberries", "Lunch": "Leftover taco bowl", "Snack 2": "Hummus with carrots and cucumbers", "Dinner": "Chicken stir-fry with mixed vegetables and rice", "Power Bowl": "Murph Mud Pie"}, "challenge": "Farmer Carry PR"}, {"date": "2026-08-27", "display": "Thursday, August 27", "dayNumber": 25, "workout": "Mobility", "schedule": [["4:20 AM", "Wake, water, coffee, creatine"], ["4:35\u20134:50", "Mobility"], ["4:50\u20135:50", "Morning chores"], ["5:50\u20136:30", "Get ready"], ["6:30\u20137:15", "Dog walk"], ["7:30 AM\u20137:00 PM", "Work"], ["7:10 PM", "Easy dinner"], ["7:45 PM", "Power Bowl"], ["8:45 PM", "Wind-down"], ["9:15 PM", "In bed"]], "meals": {"Breakfast": "Protein smoothie with berries, spinach, milk, and flax", "Snack 1": "Cottage cheese and peaches", "Lunch": "Tuna salad on whole-grain toast with a side salad", "Snack 2": "Pear and a small handful of almonds", "Dinner": "Lean steak, sweet potato, and green beans", "Power Bowl": "Murph Mud Pie"}, "challenge": "Farmer Carry PR"}, {"date": "2026-08-28", "display": "Friday, August 28", "dayNumber": 26, "workout": "Strength C", "schedule": [["4:20 AM", "Wake, water, coffee, creatine"], ["4:35\u20135:10", "Strength C"], ["5:10\u20136:10", "Morning chores"], ["6:10\u20136:50", "Get ready"], ["6:50\u20137:35", "Dog walk"], ["7:30 AM\u20137:00 PM", "Work"], ["7:10 PM", "Easy dinner"], ["7:45 PM", "Power Bowl"], ["8:45 PM", "Wind-down"], ["9:15 PM", "In bed"]], "meals": {"Breakfast": "High-protein oatmeal with berries and cinnamon", "Snack 1": "Protein shake", "Lunch": "Chicken Caesar-style salad with chickpeas", "Snack 2": "String cheese and grapes", "Dinner": "Turkey burger, giant salad, and oven fries", "Power Bowl": "Annie Apple Crisp"}, "challenge": "Farmer Carry PR"}, {"date": "2026-08-29", "display": "Saturday, August 29", "dayNumber": 27, "workout": "Conditioning", "schedule": [["4:20 AM", "Wake, water, coffee, creatine"], ["4:35\u20134:55", "Conditioning"], ["4:55\u20135:55", "Morning chores"], ["5:55\u20136:35", "Get ready"], ["6:35\u20137:20", "Dog walk"], ["8:00 AM\u20134:00 PM", "Work"], ["After work", "Walk only if desired; otherwise recover"], ["8:45 PM", "Wind-down"], ["9:15 PM", "In bed"]], "meals": {"Breakfast": "Eggs, avocado toast, and berries", "Snack 1": "Greek yogurt with chia", "Lunch": "Shrimp salad with corn, black beans, and avocado", "Snack 2": "Air-popped popcorn and a cheese stick", "Dinner": "Shrimp tacos with cabbage slaw and beans", "Power Bowl": "Blueberry Muffin"}, "challenge": "Farmer Carry PR"}, {"date": "2026-08-30", "display": "Sunday, August 30", "dayNumber": 28, "workout": "Recovery", "schedule": [["4:20 AM", "Wake, water, coffee"], ["4:35\u20135:20", "Dog walk"], ["5:20\u20136:20", "Morning chores"], ["6:20\u20137:00", "Get ready"], ["7:00\u20137:30", "Breakfast and prep"], ["8:00 AM\u20134:00 PM", "Work"], ["4:30 PM", "Meal prep and grocery reset"], ["8:45 PM", "Wind-down"], ["9:15 PM", "In bed"]], "meals": {"Breakfast": "Protein pancakes with berries", "Snack 1": "Cottage cheese with pineapple", "Lunch": "Leftovers or a protein-forward sandwich and fruit", "Snack 2": "Roasted chickpeas", "Dinner": "Sheet-pan chicken, vegetables, and baby potatoes", "Power Bowl": "Blueberry Muffin"}, "challenge": "Farmer Carry PR"}, {"date": "2026-08-31", "display": "Monday, August 31", "dayNumber": 29, "workout": "Strength A", "schedule": [["4:20 AM", "Wake, water, coffee, creatine"], ["4:35\u20135:10", "Strength A"], ["5:10\u20136:10", "Morning chores"], ["6:10\u20136:50", "Get ready"], ["6:50\u20137:35", "Dog walk"], ["Daytime", "Optional work, errands, meal prep, appointments"], ["8:45 PM", "Wind-down"], ["9:15 PM", "In bed"]], "meals": {"Breakfast": "Egg scramble with spinach, tomatoes, and feta; whole-grain toast", "Snack 1": "Cottage cheese with berries", "Lunch": "Chicken grain bowl with quinoa, cucumber, tomato, greens, and hummus", "Snack 2": "Apple with string cheese", "Dinner": "Salmon, roasted potatoes, and broccoli", "Power Bowl": "Sunrise Berry Crunch"}, "challenge": "Farmer Carry PR"}], "workouts": {"Strength A": [{"name": "Goblet squat", "sets": "3 \u00d7 10", "demo": "Hold one kettlebell at your chest. Sit between your hips, keep your chest tall, then drive through your whole foot to stand."}, {"name": "One-arm dumbbell row", "sets": "3 \u00d7 10/side", "demo": "Brace one hand on a bench or sturdy surface. Pull the dumbbell toward your hip without twisting."}, {"name": "Push-up", "sets": "3 \u00d7 8\u201312", "demo": "Keep your body in one line. Lower under control. Elevate your hands if needed."}, {"name": "Romanian deadlift", "sets": "3 \u00d7 10", "demo": "Soften your knees, push your hips back, keep weights close to your legs, then squeeze your glutes to stand."}, {"name": "Farmer carry", "sets": "3 \u00d7 45 sec", "demo": "Stand tall with heavy weights at your sides. Walk slowly without leaning or shrugging."}], "Strength B": [{"name": "Kettlebell deadlift", "sets": "3 \u00d7 12", "demo": "Place the bell between your feet. Hinge back, brace, and stand by driving the floor away."}, {"name": "Standing dumbbell press", "sets": "3 \u00d7 10", "demo": "Brace your ribs down and press overhead without leaning back."}, {"name": "Bulgarian split squat", "sets": "3 \u00d7 8/leg", "demo": "Rear foot elevated. Drop straight down, keep the front knee tracking over the toes, and push through the front foot."}, {"name": "Renegade row", "sets": "3 \u00d7 8/side", "demo": "From a wide plank, row one weight while keeping your hips as still as possible. Use knees-down if needed."}, {"name": "Side plank", "sets": "3 \u00d7 30 sec/side", "demo": "Stack shoulders and hips. Press the floor away and keep your body long."}], "Strength C": [{"name": "Kettlebell swing", "sets": "4 rounds \u00d7 20", "demo": "Hinge, hike the bell back, then snap your hips. The bell floats; your arms do not lift it."}, {"name": "Dumbbell thruster", "sets": "4 rounds \u00d7 10", "demo": "Squat with dumbbells at the shoulders, then stand powerfully and press overhead."}, {"name": "Walking lunge", "sets": "4 rounds \u00d7 20 total", "demo": "Take a controlled step, lower both knees, and drive through the front foot."}, {"name": "Medicine-ball slam", "sets": "4 rounds \u00d7 15", "demo": "Reach tall, brace, and slam the ball hard between your feet. Squat to retrieve it."}, {"name": "Mountain climber", "sets": "4 rounds \u00d7 30 total", "demo": "From plank, alternate knees toward your chest while keeping your shoulders over your hands."}], "Conditioning": [{"name": "EMOM minute 1", "sets": "15 kettlebell swings", "demo": "Use a weight you can swing crisply for all five rounds."}, {"name": "EMOM minute 2", "sets": "8\u201310 burpees or step-backs", "demo": "Choose full burpees or step one foot back at a time. Keep the pace sustainable."}, {"name": "EMOM minute 3", "sets": "12 goblet squats", "demo": "Move smoothly and finish with time to breathe."}, {"name": "EMOM minute 4", "sets": "Rest", "demo": "Breathe, reset, and prepare for the next round."}], "Mobility": [{"name": "Easy mobility flow", "sets": "10 minutes", "demo": "Cat-cow, thoracic rotations, hip flexor stretch, hamstring stretch, calf stretch, and shoulder circles."}], "Recovery": [{"name": "Recovery walk", "sets": "10,000+ total steps", "demo": "Easy pace. The goal is circulation and recovery, not intensity."}, {"name": "Mobility", "sets": "10\u201315 minutes", "demo": "Choose the areas that feel stiff and move gently."}]}, "bowls": {"Sunrise Berry Crunch": {"ingredients": ["1 cup plain Greek yogurt", "\u00bd\u20131 scoop vanilla protein powder", "\u00bd cup strawberries", "\u00bc cup blueberries", "1 Tbsp chia seeds", "2 Tbsp crunchy high-fiber cereal"], "protein": "~35\u201345 g", "fiber": "~8\u201310 g"}, "Murph Mud Pie": {"ingredients": ["1 cup plain Greek yogurt", "\u00bd\u20131 scoop chocolate protein powder", "1 Tbsp PB2", "\u00bd cup raspberries", "2 Tbsp chocolate protein granola", "1 tsp mini chocolate chips"], "protein": "~35\u201345 g", "fiber": "~8\u201311 g"}, "Annie Apple Crisp": {"ingredients": ["1 cup plain Greek yogurt", "\u00bd\u20131 scoop vanilla protein powder", "\u00bd diced Honeycrisp apple", "1 Tbsp ground flax", "Cinnamon", "2 Tbsp granola"], "protein": "~35\u201345 g", "fiber": "~6\u20139 g"}, "Blueberry Muffin": {"ingredients": ["1 cup plain Greek yogurt", "\u00bd\u20131 scoop vanilla protein powder", "\u00bd cup blueberries", "1 tsp lemon zest", "1 Tbsp chia seeds", "2 Tbsp granola or sliced almonds"], "protein": "~35\u201345 g", "fiber": "~7\u201310 g"}}, "challenges": [{"week": "Week 1", "name": "Swing Into It", "goal": 500, "unit": "kettlebell swings", "start": "2026-08-03", "end": "2026-08-09"}, {"week": "Week 2", "name": "Double-Under Revival", "goal": 100, "unit": "double-unders or practice reps", "start": "2026-08-10", "end": "2026-08-16"}, {"week": "Week 3", "name": "Push-Up Ladder", "goal": 100, "unit": "quality push-ups", "start": "2026-08-17", "end": "2026-08-23"}, {"week": "Week 4", "name": "Farmer Carry PR", "goal": 300, "unit": "total carry seconds", "start": "2026-08-24", "end": "2026-08-31"}]};
+const KEY="club420_true_redesign";
+let S=JSON.parse(localStorage.getItem(KEY)||"{}");
+S.h=S.h||{};S.top=S.top||{};S.notes=S.notes||{};S.water=S.water||{};S.checkins=S.checkins||[];S.grocery=S.grocery||{};S.vault=S.vault||{days:{},skipped:[],wish:[]};S.missions=S.missions||{};S.challenge=S.challenge||{};S.review=S.review||{};
+const save=()=>localStorage.setItem(KEY,JSON.stringify(S));
+const today=()=>new Date().toLocaleDateString("en-CA");
+const day=()=>APP.days.find(d=>d.date===today())||APP.days[0];
+const hk=(d,k)=>d+"_"+k; const getH=(d,k)=>!!S.h[hk(d,k)];
+const habits=[["workout","Workout"],["dog","Dog walk"],["protein","Protein"],["water","3 bottles"],["bowl","Power Bowl"]];
+function pad(n){return String(n).padStart(2,"0")} function time(t){t=((Math.round(t)%1440)+1440)%1440;const h=Math.floor(t/60),m=t%60;return `${h%12||12}:${pad(m)} ${h>=12?"PM":"AM"}`;}
+function sunrise(ds){const lat=33.6595,lon=-117.9988,date=new Date(ds+"T12:00:00"),start=new Date(date.getFullYear(),0,0);const N=Math.floor((date-start)/86400000),lh=lon/15,t=N+((6-lh)/24),M=.9856*t-3.289,deg=Math.PI/180;let L=(M+1.916*Math.sin(M*deg)+.020*Math.sin(2*M*deg)+282.634+360)%360;let RA=(Math.atan(.91764*Math.tan(L*deg))/deg+360)%360;RA=(RA+Math.floor(L/90)*90-Math.floor(RA/90)*90)/15;const sd=.39782*Math.sin(L*deg),cd=Math.cos(Math.asin(sd)),cosH=(Math.cos(90.833*deg)-sd*Math.sin(lat*deg))/(cd*Math.cos(lat*deg)),H=(360-Math.acos(Math.max(-1,Math.min(1,cosH)))/deg)/15,T=H+RA-.06571*t-6.622,UT=(T-lh+24)%24,off=date<new Date("2026-11-01T02:00:00")?-7:-8;return((UT+off+24)%24)*60;}
+function flow(d){const dow=new Date(d.date+"T12:00:00").getDay(),sr=sunrise(d.date),safe=sr-26;let wake,ws,wm,walk,chores,ready,work,buffer;if(dow===1){wake=300;ws=310;wm=45;walk=45;chores=40;ready=40;work=540;buffer=30}else if(dow>=2&&dow<=5){wake=260;ws=270;wm=40;walk=40;chores=30;ready=40;work=450;buffer=30}else{wake=290;ws=300;wm=40;walk=40;chores=30;ready=40;work=480;buffer=30}const we=ws+wm,re=work-buffer,rs=re-ready,wstart=Math.max(we,safe),wend=wstart+walk;let before=Math.min(chores,Math.max(0,wstart-we)),after=Math.max(0,chores-before);if(wend+after>rs)after=Math.max(0,rs-wend);const rows=[[time(wake),"Wake, water, coffee, creatine"],[`${time(ws)}–${time(we)}`,d.workout+" — workout first"]];if(before)rows.push([`${time(we)}–${time(we+before)}`,"Morning reset"]);rows.push([`${time(wstart)}–${time(wend)}`,"Dog walk at first safe light"]);if(after)rows.push([`${time(wend)}–${time(wend+after)}`,"Morning reset"]);rows.push([`${time(rs)}–${time(re)}`,"Get ready — last"]);rows.push([`${time(re)}–${time(work)}`,"Breakfast, Top 3, settle in"]);rows.push([time(work),"At workstation"]);return{rows,sr,safe};}
+function renderHome(){const d=day(),done=habits.filter(x=>getH(d.date,x[0])).length;dateLine.textContent=d.display+" · Day "+d.dayNumber;greeting.textContent="Good morning, Noelle.";coach.textContent=["You only have to start.","Protect the morning and the rest gets easier.","Today does not need to be perfect to count."][(d.dayNumber-1)%3];dayProgress.style.width=(done/habits.length*100)+"%";dayProgressText.textContent=done+" of "+habits.length+" completed";winList.innerHTML=habits.map(([k,l])=>`<label class="check"><input type="checkbox" data-h="${k}" ${getH(d.date,k)?"checked":""}><span>${l}</span></label>`).join("");document.querySelectorAll("[data-h]").forEach(x=>x.onchange=e=>{S.h[hk(d.date,e.target.dataset.h)]=e.target.checked;save();renderAll()});const top=S.top[d.date]||[{},{},{}];top3.innerHTML=[0,1,2].map(i=>`<div class="top3"><input type="checkbox" data-tc="${i}" ${top[i].done?"checked":""}><input data-tt="${i}" value="${top[i].text||""}" placeholder="Must-do #${i+1}"></div>`).join("");const n=S.notes[d.date]||{};amNote.value=n.am||"";pmWin.value=n.win||"";pmGratitude.value=n.grat||"";pmDump.value=n.dump||"";const f=flow(d);sunriseText.textContent=`Sunrise ${time(f.sr)} · earliest coyote-conscious walk ${time(f.safe)}`;flowList.innerHTML=f.rows.map(r=>`<div class="flow"><strong>${r[0]}</strong><div>${r[1]}</div></div>`).join("");const wc=Number(S.water[d.date]||0);water.innerHTML=[1,2,3,4].map(i=>`<button class="${i<=wc?"on":""}" data-water="${i}">🥤</button>`).join("");waterText.textContent=`${wc*30} oz · ${wc}/4 bottles`;document.querySelectorAll("[data-water]").forEach(b=>b.onclick=()=>{const i=Number(b.dataset.water);S.water[d.date]=i===wc?i-1:i;S.h[hk(d.date,"water")]=S.water[d.date]>=3;save();renderAll()});bowlTonight.textContent="🥣 "+d.meals["Power Bowl"];}
+saveTop3.onclick=()=>{const d=day().date;S.top[d]=[0,1,2].map(i=>({text:document.querySelector(`[data-tt="${i}"]`).value,done:document.querySelector(`[data-tc="${i}"]`).checked}));save()};saveAm.onclick=()=>{const d=day().date;S.notes[d]=S.notes[d]||{};S.notes[d].am=amNote.value;save()};savePm.onclick=()=>{const d=day().date;S.notes[d]=S.notes[d]||{};Object.assign(S.notes[d],{win:pmWin.value,grat:pmGratitude.value,dump:pmDump.value});save()};
+function renderBody(){const d=day(),list=APP.workouts[d.workout]||APP.workouts.Recovery;workoutTitle.textContent=d.workout;exerciseList.innerHTML=list.map(x=>`<div class="meal"><b>${x.name}</b><div>${x.sets}</div><div class="small">${x.demo}</div></div>`).join("");sunrises.textContent=APP.days.filter(x=>habits.filter(h=>getH(x.date,h[0])).length>=3).length;workouts.textContent=APP.days.filter(x=>getH(x.date,"workout")).length;walks.textContent=APP.days.filter(x=>getH(x.date,"dog")).length;waterDays.textContent=APP.days.filter(x=>Number(S.water[x.date]||0)>=3).length;}
+let left=2400,tick=null;function drawTimer(){timer.textContent=`${pad(Math.floor(left/60))}:${pad(left%60)}`} startTimer.onclick=()=>{if(tick)return;tick=setInterval(()=>{if(left>0){left--;drawTimer()}},1000)};pauseTimer.onclick=()=>{clearInterval(tick);tick=null};document.querySelectorAll("[data-min]").forEach(b=>b.onclick=()=>{clearInterval(tick);tick=null;left=Number(b.dataset.min)*60;drawTimer()});
+saveCheckin.onclick=()=>{S.checkins.push({date:today(),weight:weight.value,waist:waist.value,squat:squat.value,pushups:pushups.value});save()};
+const grocerySections={"Proteins":["Chicken","Eggs","Greek yogurt","Cottage cheese","Protein powder","Salmon"],"Fiber + produce":["Berries","Apples","Broccoli","Beans","Chia","Flax"],"Bowl Lab":["Granola","High-fiber cereal","PB2","Almonds","Cinnamon"]};
+function renderFuel(){const d=day();mealList.innerHTML=Object.entries(d.meals).map(([k,v])=>`<div class="meal"><b>${k}</b><div>${v}</div></div>`).join("");bowlList.innerHTML=Object.entries(APP.bowls).map(([n,b])=>`<div class="meal"><b>${n}</b><div class="small">${b.protein} · ${b.fiber}</div></div>`).join("");groceryList.innerHTML=Object.entries(grocerySections).map(([s,items])=>`<h3>${s}</h3>${items.map(i=>`<label class="check"><input type="checkbox" data-g="${s+i}" ${S.grocery[s+i]?"checked":""}><span>${i}</span></label>`).join("")}`).join("");document.querySelectorAll("[data-g]").forEach(x=>x.onchange=e=>{S.grocery[e.target.dataset.g]=e.target.checked;save()});}
+function vaultStreakCalc(){let s=0,d=new Date(today()+"T12:00:00");while(S.vault.days[d.toLocaleDateString("en-CA")]){s++;d.setDate(d.getDate()-1)}return s}
+function renderVault(){noBuy.checked=!!S.vault.days[today()];vaultStreak.textContent=vaultStreakCalc();vaultDays.textContent=Object.values(S.vault.days).filter(Boolean).length;vaultSaved.textContent="$"+S.vault.skipped.reduce((a,x)=>a+Number(x.amount||0),0).toFixed(0);vaultWish.textContent=S.vault.wish.length;skipList.innerHTML=S.vault.skipped.slice().reverse().map(x=>`<div class="meal"><b>$${Number(x.amount).toFixed(2)}</b> ${x.item}</div>`).join("");wishList.innerHTML=S.vault.wish.map((x,i)=>`<div class="meal"><b>${x.item}</b> · $${Number(x.price||0).toFixed(2)}<div class="small">${x.why||""}</div><button class="ghost" data-rm="${i}">Remove</button></div>`).join("");document.querySelectorAll("[data-rm]").forEach(b=>b.onclick=()=>{S.vault.wish.splice(Number(b.dataset.rm),1);save();renderVault()});}
+noBuy.onchange=e=>{S.vault.days[today()]=e.target.checked;save();renderVault()};addSkip.onclick=()=>{if(!skipItem.value||!skipAmount.value)return;S.vault.skipped.push({item:skipItem.value,amount:Number(skipAmount.value)});skipItem.value="";skipAmount.value="";save();renderVault()};addWish.onclick=()=>{if(!wishItem.value)return;S.vault.wish.push({item:wishItem.value,price:Number(wishPrice.value||0),why:wishWhy.value,date:today()});wishItem.value="";wishPrice.value="";wishWhy.value="";save();renderVault()};const missions=["Wear a forgotten lipstick.","Use one neglected palette.","Clean five brushes.","Rediscover an old blush.","Organize one beauty drawer."];stashBtn.onclick=()=>stashMission.textContent=missions[Math.floor(Math.random()*missions.length)];
+function renderWeek(){mBody.value=S.missions.body||"";mMoney.value=S.missions.money||"";mHome.value=S.missions.home||"";mLife.value=S.missions.life||"";mLearn.value=S.missions.learn||"";const c=APP.challenges.find(c=>day().date>=c.start&&day().date<=c.end)||APP.challenges[0],v=Number(S.challenge[c.name]||0);challengeName.textContent=c.name;challengeText.textContent=`${v} / ${c.goal} ${c.unit}`;challengeBar.style.width=Math.min(100,v/c.goal*100)+"%";rWorked.value=S.review.worked||"";rHard.value=S.review.hard||"";rAnnoy.value=S.review.annoy||"";rChange.value=S.review.change||"";}
+saveMissions.onclick=()=>{S.missions={body:mBody.value,money:mMoney.value,home:mHome.value,life:mLife.value,learn:mLearn.value};save()};addChallenge.onclick=()=>{const c=APP.challenges.find(c=>day().date>=c.start&&day().date<=c.end)||APP.challenges[0];S.challenge[c.name]=Number(S.challenge[c.name]||0)+Number(challengeAdd.value||0);challengeAdd.value="";save();renderWeek()};saveReview.onclick=()=>{S.review={worked:rWorked.value,hard:rHard.value,annoy:rAnnoy.value,change:rChange.value,date:today()};save()};
+document.querySelectorAll("[data-view]").forEach(b=>b.onclick=()=>{document.querySelectorAll(".view").forEach(v=>v.classList.toggle("active",v.id===b.dataset.view));document.querySelectorAll("[data-view]").forEach(x=>x.classList.toggle("active",x===b));window.scrollTo(0,0)});
+document.querySelectorAll("[data-panel]").forEach(b=>b.onclick=()=>{document.querySelectorAll("#body .panel").forEach(p=>p.classList.toggle("active",p.id===b.dataset.panel));document.querySelectorAll("[data-panel]").forEach(x=>x.classList.toggle("active",x===b))});
+document.querySelectorAll("[data-fuel]").forEach(b=>b.onclick=()=>{document.querySelectorAll("#fuel .panel").forEach(p=>p.classList.toggle("active",p.id===b.dataset.fuel));document.querySelectorAll("[data-fuel]").forEach(x=>x.classList.toggle("active",x===b))});
+function renderAll(){renderHome();renderBody();renderFuel();renderVault();renderWeek();drawTimer()} renderAll(); if("serviceWorker"in navigator)addEventListener("load",()=>navigator.serviceWorker.register("./service-worker.js").catch(()=>{}));
 </script>
 </body>
 </html>

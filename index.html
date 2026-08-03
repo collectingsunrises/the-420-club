@@ -80,6 +80,8 @@ input,textarea{width:100%;border:1px solid var(--line);border-radius:12px;paddin
     <button data-tab="grocery">Groceries</button>
     <button data-tab="progress">Progress</button>
     <button data-tab="badges">Badges</button>
+    <button data-tab="journal">Journal</button>
+    <button data-tab="week">Week</button>
     <button data-tab="beauty">Beauty Vault</button>
   </div>
 
@@ -98,6 +100,11 @@ input,textarea{width:100%;border:1px solid var(--line);border-radius:12px;paddin
       <button class="primary" id="saveTop3" style="margin-top:12px">Save Today's Top 3</button>
     </div>
     <div class="grid" id="todayMetrics"></div>
+    <div class="card">
+      <h2>Morning thoughts</h2>
+      <textarea id="morningThoughts" class="note" placeholder="What is on your mind this morning?"></textarea>
+      <button class="primary" id="saveMorningThoughts" style="margin-top:10px">Save morning note</button>
+    </div>
     <div class="card">
       <h2>Water tracker</h2>
       <p class="small">Each bottle is 30 oz. Three bottles = 90 oz and counts as sufficient. Four bottles = 120 oz and earns a hydration bonus.</p>
@@ -279,6 +286,9 @@ state.habits = state.habits || {};
 state.challenge = state.challenge || {};
 state.checkins = state.checkins || [];
 state.grocery = state.grocery || {};
+state.journal = state.journal || {};
+state.missions = state.missions || {};
+state.reviews = state.reviews || {};
 state.beauty = state.beauty || {days:{}, skipped:[], wishlist:[]};
 
 const coachMessages = [

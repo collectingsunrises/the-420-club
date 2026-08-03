@@ -1,11 +1,4 @@
-THE 4:20 CLUB — VERSION 2.0
+THE 4:20 CLUB — VERSION 2.2 SUNRISE COLLECTION
 
-New:
-- Coach Mode
-- progress ring and quick dashboard
-- guided cool-downs
-- protein and fiber check-ins
-- Today’s Face in Beauty Vault
-- visual polish
-
-Upload every file and replace the old GitHub repository files.
+Adds a visible Sunrise Collection on Home with milestone badges, next-badge progress, and earned dates.
+Upload every file to GitHub and replace the existing versions.
